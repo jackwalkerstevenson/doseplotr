@@ -7,7 +7,7 @@ test_that("converting from logmolar to nM works", {
 test_that("converting from nM to logmolar works", {
   expect_equal(nM_to_logmolar(1), -9)
   expect_equal(nM_to_logmolar(100), -7)
-  expect_warning(val <- nM_to_logmolar(-1))
+  expect_warning(val <- nM_to_logmolar(-1), "NaNs produced")
   expect_true(is.nan(val))
   expect_equal(nM_to_logmolar(0), -Inf)
 })
