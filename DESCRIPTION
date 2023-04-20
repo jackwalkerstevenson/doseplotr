@@ -1,10 +1,15 @@
 Package: doseplotr
-Title: What the Package Does (One Line, Title Case)
+Title: Import, Analyze and Visualize Dose-Response Data
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Jack", "Stevenson", email = "doseplotr@gmail.com",
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0001-7261-4958"))
+Description: A system for analyzing and visualizing the dose-dependent effects
+    of one or more treatments on one or more targets. You can import data for
+    multiple combinations of treatments and targets, and 'doseplotr' can
+    generate summary statistics (e.g. EC50) and plots for each combination of
+    treatment and target. It can also generate more complex plots, such as a
+    plot overlaying the effects of one treatment on all targets tested.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
