@@ -1,13 +1,13 @@
-test_that("converting from logmolar to nM works", {
-  expect_equal(logmolar_to_nM(-9), 1)
-  expect_equal(logmolar_to_nM(0), 1e9)
-  expect_equal(logmolar_to_nM(1), 1e10)
+test_that("converting from log(molar) to nM works", {
+  expect_equal(logM_to_nM(-9), 1)
+  expect_equal(logM_to_nM(0), 1e9)
+  expect_equal(logM_to_nM(1), 1e10)
 })
 
-test_that("converting from nM to logmolar works", {
-  expect_equal(nM_to_logmolar(1), -9)
-  expect_equal(nM_to_logmolar(100), -7)
-  expect_warning(val <- nM_to_logmolar(-1), "NaNs produced")
+test_that("converting from nM to log(molar) works", {
+  expect_equal(nM_to_logM(1), -9)
+  expect_equal(nM_to_logM(100), -7)
+  expect_warning(val <- nM_to_logM(-1), "NaNs produced")
   expect_true(is.nan(val))
-  expect_equal(nM_to_logmolar(0), -Inf)
+  expect_equal(nM_to_logM(0), -Inf)
 })
