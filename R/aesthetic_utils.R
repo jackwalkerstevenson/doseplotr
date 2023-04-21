@@ -9,14 +9,11 @@
 #' used as the "begin" and "end" arguments for `ggplot2::scale_color_viridis`.
 #'
 #' @param n The number of values that need to fit in the range
-#' @param reverse
+#' @param reverse Boolean for whether to return the higher number in the range
+#'   first (the default).
 #'
 #' @return A vector of two numbers: the beginning and end of the range.
 #'
-#' @examples
-#' viridis_range(3)
-#' viridis_range(7)
-#' viridis_range(4, reverse = FALSE)
 viridis_range <- function(n, reverse = TRUE){
   range <- ifelse(n < 6, 0.2*n, 1)
   high <- 0.5 + range / 2

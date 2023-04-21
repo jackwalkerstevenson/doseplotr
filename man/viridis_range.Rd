@@ -9,7 +9,8 @@ viridis_range(n, reverse = TRUE)
 \arguments{
 \item{n}{The number of values that need to fit in the range}
 
-\item{reverse}{}
+\item{reverse}{Boolean for whether to return the higher number in the range
+first (the default).}
 }
 \value{
 A vector of two numbers: the beginning and end of the range.
@@ -22,9 +23,4 @@ of discrete values (e.g. 2 or 3) are by default displayed at the ends of
 color scale, leading to jarring results like one value being dark purple and
 the other bright yellow. The output of \code{viridis_range()} is intended to be
 used as the "begin" and "end" arguments for \code{ggplot2::scale_color_viridis}.
-}
-\examples{
-viridis_range(3)
-viridis_range(7)
-viridis_range(4, reverse = FALSE)
 }

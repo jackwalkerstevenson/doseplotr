@@ -15,6 +15,3 @@ A number: the concentration in log(molar)
 \description{
 Convert concentration from nanomolar to log(molar) units
 }
-\examples{
-nM_to_logM(1)
-}

@@ -4,8 +4,6 @@
 #'
 #' @return A number: the concentration in nM
 #'
-#' @examples
-#' logmolar_to_nM(-9)
 logM_to_nM <- function(conc_logmolar){
   return(10^conc_logmolar*1e9)
 }
@@ -16,8 +14,6 @@ logM_to_nM <- function(conc_logmolar){
 #'
 #' @return A number: the concentration in log(molar)
 #'
-#' @examples
-#' nM_to_logM(1)
 nM_to_logM <- function(conc_nM){
   return(log10(conc_nM/1e9))
 }
