@@ -17,3 +17,14 @@ logM_to_nM <- function(conc_logmolar){
 nM_to_logM <- function(conc_nM){
   return(log10(conc_nM/1e9))
 }
+
+#' Get the length of the longest string in a vector of strings
+#'
+#' @param strings A vector of strings
+#'
+#' @return Length of the longest string in the vector
+#'
+longest <- function(strings){
+  lengths <- purrr::map(strings, nchar)
+  lengths[[which.max(lengths)]]
+}

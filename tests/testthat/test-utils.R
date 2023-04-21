@@ -11,3 +11,8 @@ test_that("converting from nM to log(molar) works", {
   expect_true(is.nan(val))
   expect_equal(nM_to_logM(0), -Inf)
 })
+
+test_that("finding the longest string in a list works", {
+  test_strings <- c("f", "foobar", "foo")
+  expect_equal(longest(test_strings), 6)
+})
