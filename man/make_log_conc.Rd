@@ -2,7 +2,7 @@
 % Please edit documentation in R/import.R
 \name{make_log_conc}
 \alias{make_log_conc}
-\title{Convert conc_uM or conc_nM columns to log(molar)}
+\title{Create a log(molar) column from conc_uM or conc_nM columns}
 \usage{
 make_log_conc(df)
 }
@@ -16,7 +16,7 @@ The same dataframe with an additional column "conc_logM" representing
 concentration in log(molar) units.
 }
 \description{
-Convert conc_uM or conc_nM columns to log(molar)
+Create a log(molar) column from conc_uM or conc_nM columns
 }
 \examples{
 df <- data.frame("treatment" = c("foo", "bar", "baz"),

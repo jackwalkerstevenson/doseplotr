@@ -1,4 +1,4 @@
-#' Convert conc_uM or conc_nM columns to log(molar)
+#' Create a log(molar) column from conc_uM or conc_nM columns
 #'
 #' @param df A dataframe containing either a column called "conc_nM" or a column
 #'   called "conc_uM", representing concentration in nanomolar or micromolar
