@@ -1,11 +1,11 @@
-#' Create a log(molar) column from conc_uM or conc_nM columns
+#' Create a conc_logM column from conc_uM or conc_nM columns
 #'
 #' @param df A dataframe containing either a column called "conc_nM" or a column
 #'   called "conc_uM", representing concentration in nanomolar or micromolar
 #'   units respectively.
 #'
 #' @return The same dataframe with an additional column "conc_logM" representing
-#'   concentration in log(molar) units.
+#'   concentration in log10(molar) units.
 #' @importFrom rlang .data
 #' @export
 #'
