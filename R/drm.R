@@ -31,10 +31,16 @@ get_drm <- function(data, trt, tgt,
                     tgt_colname="target",
                     activity_colname="activity"
                     ){
+  assertthat::assert_that(assertthat::has_name(data, trt_colname),
+              msg = glue::glue("column {trt_colname} not found in data"))
+  assertthat::assert_that(assertthat::has_name(data, tgt_colname),
+              msg = glue::glue("column {tgt_colname} not found in data"))
+  assertthat::assert_that(assertthat::has_name(data, activity_colname),
+              msg = glue::glue("column {activity_colname} not found in data"))
   data_subset <- data |>
     # unclear why you have to wrap embrace in get() but apparently you do
     dplyr::filter(get({{ trt_colname }}) == trt,
                   get({{ tgt_colname }}) == tgt)
   # 4-param logistic model on pre-log-transformed data
-  return(drc::drm(activity~conc_logM, data = data_subset, fct = drc::L.4()))
+  return(drc::drm(get({{ activity_colname }})~conc_logM, data = data_subset, fct = drc::L.4()))
 }
