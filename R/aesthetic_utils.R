@@ -13,7 +13,7 @@
 #'   first (the default).
 #'
 #' @return A vector of two numbers: the beginning and end of the range.
-#'
+#' @export
 viridis_range <- function(n, reverse = TRUE){
   range <- ifelse(n < 6, 0.2*n, 1)
   high <- 0.5 + range / 2
