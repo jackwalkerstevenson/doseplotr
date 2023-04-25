@@ -6,7 +6,6 @@
 #'
 #' @return The same dataframe with an additional column "conc_logM" representing
 #'   concentration in log10(molar) units.
-#' @importFrom rlang .data
 #' @export
 #'
 #' @examples
