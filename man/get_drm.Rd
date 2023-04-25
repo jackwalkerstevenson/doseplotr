@@ -4,20 +4,39 @@
 \alias{get_drm}
 \title{Get a dose-response model object for the activity of a treatment on a target}
 \usage{
-get_drm(data, trt, tgt)
+get_drm(
+  data,
+  trt,
+  tgt,
+  trt_colname = "treatment",
+  tgt_colname = "target",
+  activity_colname = "activity"
+)
 }
 \arguments{
 \item{data}{A dataframe containing the following columns:
 \itemize{
-\item treatment
-\item target
-\item activity: the activity of a treatment on a target, e.g. percent inhibition
+\item "treatment" (default) or other treatment column name (see \code{trt_colname})
+\item "target" (default) or other target column name (see \code{tgt_colname})
+\item "activity" (default) or other activity column name (see \code{activity_colname})
 \item conc_logM: concentration of treatment in log(molar) units
 }}
 
 \item{trt}{Name of the treatment to use in the model}
 
 \item{tgt}{Name of the target to use in the model}
+
+\item{trt_colname}{Name of the column containing treatments.
+Default is "treatment". Typical alternatives might include e.g. "drug",
+"additive", "supplement".}
+
+\item{tgt_colname}{Name of the column containing targets.
+Default is "target". Typical alternatives might include e.g. "mutant",
+"cell_line", "species".}
+
+\item{activity_colname}{Name of the column containing activity of treatment.
+Default is "activity". Typical alternatives might include e.g.
+"percent_inhibition", "viability", "growth".}
 }
 \value{
 A dose-response model object of class \code{drc}.
