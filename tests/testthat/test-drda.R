@@ -10,7 +10,7 @@ test_that("filter_trt_tgt recognizes a nonstandard column name", {
                    target = c("apple", "orange", "banana", "apple", "orange"))
   filtered_df <- data.frame(treatment_test = c("foo"), target = c("orange"))
   expect_equal(filter_trt_tgt(df, "foo", "orange",
-                              trt_colname = "treatment_test"),
+                              trt_col = "treatment_test"),
                filtered_df)
 })
 
