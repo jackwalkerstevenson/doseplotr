@@ -23,6 +23,7 @@ Imports:
     assertthat,
     dplyr,
     drc,
+    drda,
     ggprism,
     glue,
     purrr,
