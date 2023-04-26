@@ -4,32 +4,25 @@
 \alias{filter_trt_tgt}
 \title{Filter data to include only a given treatment and target}
 \usage{
-filter_trt_tgt(
-  data,
-  trt,
-  tgt,
-  trt_colname = "treatment",
-  tgt_colname = "target"
-)
+filter_trt_tgt(data, trt, tgt, trt_col = "treatment", tgt_col = "target")
 }
 \arguments{
 \item{data}{A dataframe containing the following columns:
 \itemize{
-\item "treatment" (default) or other treatment column name (see \code{trt_colname})
-\item "target" (default) or other target column name (see \code{tgt_colname})
+\item "treatment" (default) or other treatment column name (see \code{trt_col})
+\item "target" (default) or other target column name (see \code{tgt_col})
 }}
 
 \item{trt}{Name of the treatment to use in the model}
 
 \item{tgt}{Name of the target to use in the model}
 
-\item{trt_colname}{Name of the column containing treatments. Default is
+\item{trt_col}{Name of the column containing treatments. Default is
 "treatment". Typical alternatives might include e.g. "drug", "additive",
 "supplement".}
 
-\item{tgt_colname}{Name of the column containing targets. Default is
-"target". Typical alternatives might include e.g. "mutant", "cell_line",
-"species".}
+\item{tgt_col}{Name of the column containing targets. Default is "target".
+Typical alternatives might include e.g. "mutant", "cell_line", "species".}
 }
 \value{
 A dataframe containing only rows filtered for the desired treatment
