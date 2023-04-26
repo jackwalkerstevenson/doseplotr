@@ -4,7 +4,7 @@
 \alias{get_drda}
 \title{Get a drda dose-response model for the activity of a treatment on a target}
 \usage{
-get_drda(data, activity_col = "activity", ...)
+get_drda(data, activity_col = "activity")
 }
 \arguments{
 \item{data}{A dataframe containing the following columns:

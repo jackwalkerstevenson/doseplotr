@@ -28,4 +28,5 @@ Imports:
     glue,
     purrr,
     rlang,
+    stats,
     viridis

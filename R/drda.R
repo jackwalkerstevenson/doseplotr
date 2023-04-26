@@ -81,21 +81,21 @@ get_drda_unbounded <- function(data, activity_col="activity"){
 #' @return A dose-response model object of class `drda`.
 #' @export
 #'
-get_drda <- function(data, activity_col="activity", ...){
+get_drda <- function(data, activity_col="activity"){
   # first get coefficients of a model with no bounds on parameters
-  unbounded_coeff <- coefficients(get_drda_unbounded(data,
-                                                     activity_col))
+  unbounded_coeff <- stats::coefficients(get_drda_unbounded(data,
+                                                            activity_col))
   unbounded_alpha <- unbounded_coeff["alpha"] # 0 conc asymptote
   unbounded_delta <- unbounded_coeff["delta"] # height of curve
   # bound curve height depending on whether the model increases or decreases
   if(unbounded_delta < 0){
     # bound delta above -alpha so curves can't go way below 0
     return(drda::drda(get({{ activity_col }})~conc_logM, data = data,
-                      lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf), ...))
+                      lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf)))
   }
   else{
     # bound delta below 100-alpha so curves can't go way above 100
     return(drda::drda(get({{ activity_col }})~conc_logM, data = data,
-                      upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf), ...))
+                      upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
   }
 }
