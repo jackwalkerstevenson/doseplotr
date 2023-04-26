@@ -82,8 +82,7 @@ get_drda_helper <- function(data, activity_col="activity", ...){
 #' 0-concentration asymptote may increase slightly, so the maximum-concentration
 #' asymptote may still end up slightly above 100.
 #'
-#' @inheritParams get_drda_helper
-#' @return A dose-response model object of class `drda`.
+#' @inherit get_drda_helper params return
 #' @export
 #'
 get_drda <- function(data, activity_col="activity"){
@@ -102,4 +101,29 @@ get_drda <- function(data, activity_col="activity"){
     return(get_drda_helper(data, activity_col,
                            upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
   }
+}
+
+#' Fit a drda 4-parameter logistic model with one or more parameters fixed
+#'
+#' `get_drda_fixed()` runs [get_drda_helper()] to generate a 4-parameter
+#' logistic dose-response model for the effect of a given treatment on a target
+#' with one or more of the parameters fixed at a given value. The four
+#' parameters are available as optional arguments, named as in [drda::drda()].
+#'
+#' @inherit get_drda_helper params return
+#' @param alpha Optional: fixed value of asymptote level at 0 dose. See
+#'   [drda::drda()].
+#' @param delta Optional: fixed value of height of the curve (difference betwene
+#'   minimum and maximum concentration asymptotes). Signed (can be positive or
+#'   negative). See [drda::drda()].
+#' @param eta Optional: fixed value of growth rate or Hill slope. Not signed
+#'   (always positive). See [drda::drda()].
+#' @param phi Optional: fixed value of mid-value or EC50. See [drda::drda()].
+#'
+get_drda_fixed <- function(data, alpha=NA, delta=NA, eta=NA, phi=NA,
+                           activity_col="activity"){
+  # get bounds for fixed drda, substituting Inf and -Inf for free parameters
+  upper <- param_bounds(c(alpha, delta, eta, phi), lower = FALSE)
+  lower <- param_bounds(c(alpha, delta, eta, phi), lower = TRUE)
+  get_drda_helper(data, activity_col, lower_bound = lower, upper_bound = upper)
 }
