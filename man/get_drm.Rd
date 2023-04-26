@@ -4,16 +4,16 @@
 \alias{get_drm}
 \title{Get a drc dose-response model for the activity of a treatment on a target}
 \usage{
-get_drm(data, activity_colname = "activity", ...)
+get_drm(data, activity_col = "activity", ...)
 }
 \arguments{
 \item{data}{A dataframe containing the following columns:
 \itemize{
-\item "activity" (default) or other activity column name (see \code{activity_colname})
+\item "activity" (default) or other activity column name (see \code{activity_col})
 \item conc_logM: concentration of treatment in log(molar) units
 }}
 
-\item{activity_colname}{Name of the column containing activity of treatment.
+\item{activity_col}{Name of the column containing activity of treatment.
 Default is "activity". Typical alternatives might include e.g.
 "percent_inhibition", "viability", "growth".}
 
