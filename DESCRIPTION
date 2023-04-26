@@ -24,9 +24,7 @@ Imports:
     dplyr,
     drc,
     drda,
-    ggprism,
     glue,
     purrr,
     rlang,
-    stats,
-    viridis
+    stats
