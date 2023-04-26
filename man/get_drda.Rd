@@ -7,7 +7,9 @@
 get_drda(data, activity_col = "activity")
 }
 \arguments{
-\item{data}{A dataframe containing the following columns:
+\item{data}{A dataframe containing dose-response data for only one treatment
+on one target. If needed, filter data in advance with \code{\link[=filter_trt_tgt]{filter_trt_tgt()}}.
+The dataframe should contain the following columns:
 \itemize{
 \item "activity" (default) or other activity column name (see \code{activity_col})
 \item conc_logM: concentration of treatment in log(molar) units
@@ -21,7 +23,7 @@ Default is "activity". Typical alternatives might include e.g.
 A dose-response model object of class \code{drda}.
 }
 \description{
-\code{get_drda()} runs \code{\link[=get_drda_unbounded]{get_drda_unbounded()}} to generate a 4-parameter logistic
+\code{get_drda()} runs \code{\link[=get_drda_helper]{get_drda_helper()}} to generate a 4-parameter logistic
 dose-response model for the effect of a given treatment on a target. It
 attempts to bound the parameters of the model to avoid physically unrealistic
 fits.

@@ -34,29 +34,34 @@ filter_trt_tgt <- function(data, trt, tgt,
 
 #' Get a drda dose-response model without bounds on parameters
 #'
-#' `get_drda_unbounded()` runs [drda::drda()] to generate a 4-parameter logistic
+#' `get_drda_helper()` runs [drda::drda()] to generate a 4-parameter logistic
 #' dose-response model for the effect of a given treatment on a target. It
-#' places no bounds on the parameters. It is intended for internal use in
-#' generating bounded models.
+#' places no bounds on the parameters by default but allows arguments to be
+#' passed to [drda::drda()]. It is intended for internal use in generating
+#' bounded models.
 #'
-#' @param data A dataframe containing the following columns:
+#' @param data A dataframe containing dose-response data for only one treatment
+#'   on one target. If needed, filter data in advance with [filter_trt_tgt()].
+#'   The dataframe should contain the following columns:
+#'
 #' * "activity" (default) or other activity column name (see `activity_col`)
 #' * conc_logM: concentration of treatment in log(molar) units
 #' @param activity_col Name of the column containing activity of treatment.
 #'   Default is "activity". Typical alternatives might include e.g.
 #'   "percent_inhibition", "viability", "growth".
+#' @param ... Additional arguments to be passed to [drda::drda()], e.g. bounds.
 #' @return A dose-response model object of class `drda`.
 #'
-get_drda_unbounded <- function(data, activity_col="activity"){
+get_drda_helper <- function(data, activity_col="activity", ...){
   assertthat::assert_that(assertthat::has_name(data, activity_col),
                           msg = glue::glue("column {activity_col} not found"))
   # 4-param logistic model on pre-log-transformed data
-  return(drda::drda(get({{ activity_col }})~conc_logM, data = data))
+  return(drda::drda(get({{ activity_col }})~conc_logM, data = data, ...))
 }
 
 #' Get a drda dose-response model for the activity of a treatment on a target
 #'
-#' `get_drda()` runs [get_drda_unbounded()] to generate a 4-parameter logistic
+#' `get_drda()` runs [get_drda_helper()] to generate a 4-parameter logistic
 #' dose-response model for the effect of a given treatment on a target. It
 #' attempts to bound the parameters of the model to avoid physically unrealistic
 #' fits.
@@ -77,25 +82,24 @@ get_drda_unbounded <- function(data, activity_col="activity"){
 #' 0-concentration asymptote may increase slightly, so the maximum-concentration
 #' asymptote may still end up slightly above 100.
 #'
-#' @inheritParams get_drda_unbounded
+#' @inheritParams get_drda_helper
 #' @return A dose-response model object of class `drda`.
 #' @export
 #'
 get_drda <- function(data, activity_col="activity"){
   # first get coefficients of a model with no bounds on parameters
-  unbounded_coeff <- stats::coefficients(get_drda_unbounded(data,
-                                                            activity_col))
-  unbounded_alpha <- unbounded_coeff["alpha"] # 0 conc asymptote
-  unbounded_delta <- unbounded_coeff["delta"] # height of curve
+  unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
+  unbounded_alpha <- unbounded_coeffs["alpha"] # 0 conc asymptote
+  unbounded_delta <- unbounded_coeffs["delta"] # height of curve
   # bound curve height depending on whether the model increases or decreases
   if(unbounded_delta < 0){
     # bound delta above -alpha so curves can't go way below 0
-    return(drda::drda(get({{ activity_col }})~conc_logM, data = data,
-                      lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf)))
+    return(get_drda_helper(data, activity_col,
+                           lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf)))
   }
   else{
     # bound delta below 100-alpha so curves can't go way above 100
-    return(drda::drda(get({{ activity_col }})~conc_logM, data = data,
-                      upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
+    return(get_drda_helper(data, activity_col,
+                           upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
   }
 }
