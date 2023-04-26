@@ -28,3 +28,27 @@ longest <- function(strings){
   lengths <- purrr::map(strings, nchar)
   lengths[[which.max(lengths)]]
 }
+
+#' Replace NA values in a vector with Inf or -Inf
+#'
+#' This method is intended to prepare vectors for use by [get_drda_fixed()] as
+#' the arguments for [drda::drda()]'s `lower_bound` and `upper_bound`
+#' parameters.
+#'
+#' @param params A vector of values (generally representing the four parameters
+#'   of the logistic function in [drda::drda()]).
+#' @param lower Whether to generate Inf or -Inf values for undefined parameters.
+#'   Positive is default.
+#'
+#' @return A vector of the same length as the original vector. NA values in the
+#'   input vector are replaced with Inf or -Inf.
+param_bounds <- function(params, lower=FALSE){
+  substitute <- if(lower) -Inf else Inf
+  params |>
+    # replace NA values with Inf or -Inf for upper or lower bounds
+    purrr::map_vec(\(x) if(is.na(x)) substitute else x) |>
+    # with identical upper and lower bounds, drda makes unplottable models
+    # so provide a tiny 1e-4 range and then it's happy
+    # sorry this is a hack
+    purrr::map_vec(\(x) if(lower) x - 1e-4*abs(x) else x + 1e-4*abs(x))
+}

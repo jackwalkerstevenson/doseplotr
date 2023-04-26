@@ -16,3 +16,17 @@ test_that("finding the longest string in a list works", {
   test_strings <- c("f", "foobar", "foo")
   expect_equal(longest(test_strings), 6)
 })
+
+test_that("substituting Inf and -Inf into a vector works", {
+  v <- c(68.170, -69.39, 4.267, NA)
+  pos_sub <- c(68.170 + 68.170*1e-4,
+               -69.39 + 69.39*1e-4,
+               4.267 + 4.267*1e-4,
+               Inf)
+  neg_sub <- c(68.170 - 68.170*1e-4,
+               -69.39 - 69.39*1e-4,
+               4.267 - 4.267*1e-4,
+               -Inf)
+  expect_equal(param_bounds(v), pos_sub)
+  expect_equal(param_bounds(v, lower = TRUE), neg_sub)
+})
