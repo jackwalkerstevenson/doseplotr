@@ -19,10 +19,7 @@ test_that("finding the longest string in a list works", {
 
 test_that("substituting Inf and -Inf into a vector works", {
   v <- c(68.170, -69.39, 4.267, NA)
-  pos_sub <- c(68.170 + 68.170*1e-4,
-               -69.39 + 69.39*1e-4,
-               4.267 + 4.267*1e-4,
-               Inf)
+  pos_sub <- c(68.170, -69.39, 4.267, Inf)
   neg_sub <- c(68.170 - 68.170*1e-4,
                -69.39 - 69.39*1e-4,
                4.267 - 4.267*1e-4,

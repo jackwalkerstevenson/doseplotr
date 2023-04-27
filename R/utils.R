@@ -50,5 +50,5 @@ param_bounds <- function(params, lower=FALSE){
     # with identical upper and lower bounds, drda makes unplottable models
     # so provide a tiny 1e-4 range and then it's happy
     # sorry this is a hack
-    purrr::map_vec(\(x) if(lower) x - 1e-4*abs(x) else x + 1e-4*abs(x))
+    purrr::map_vec(\(x) if(lower) x - 1e-4*abs(x) else x)
 }

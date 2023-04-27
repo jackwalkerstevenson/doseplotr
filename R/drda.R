@@ -122,8 +122,12 @@ get_drda <- function(data, activity_col="activity"){
 #'
 get_drda_fixed <- function(data, alpha=NA, delta=NA, eta=NA, phi=NA,
                            activity_col="activity"){
+  params <- c(alpha, delta, eta, phi)
+  # drda bounds require a non-infinite value. special case for no params:
+  if(all(is.na(params))) return(get_drda_helper(data, activity_col))
   # get bounds for fixed drda, substituting Inf and -Inf for free parameters
   upper <- param_bounds(c(alpha, delta, eta, phi), lower = FALSE)
   lower <- param_bounds(c(alpha, delta, eta, phi), lower = TRUE)
-  get_drda_helper(data, activity_col, lower_bound = lower, upper_bound = upper)
+  get_drda_helper(data, activity_col, lower_bound = lower,
+                  upper_bound = upper)
 }
