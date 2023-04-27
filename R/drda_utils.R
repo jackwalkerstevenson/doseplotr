@@ -25,3 +25,19 @@ get_EC_nM <- function(model, level=50){
   # effective_dose expects level from 0 to 1
   drda::effective_dose(model, level/100)[1] |> logM_to_nM()
 }
+
+#' Estimate the EC50 of a treatment on a target from a single measurement
+#'
+#' @param alpha The alpha parameter from a `drda` model.
+#' @param delta The delta parameter from a `drda` model.
+#' @param eta The eta parameter from a `drda` model.
+#' @param x The dose of the single point measurement in log(molar) units
+#' @param y The response of the single point measurement
+#'
+#' @return The estimated EC50 in log10(molar) units
+#' @export
+#'
+EC50_logM_from_point <- function(alpha, delta, eta, x, y){
+  # 4-parameter logistic equation solved for phi
+  log(delta/(y-alpha)-1)/eta + x
+}
