@@ -26,5 +26,7 @@ Imports:
     drda,
     glue,
     purrr,
+    readr,
     rlang,
-    stats
+    stats,
+    tidyr
