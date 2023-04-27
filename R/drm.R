@@ -23,7 +23,7 @@ get_drm <- function(data, activity_col="activity", ...){
 
 #' Title Get an EC value with drc for the activity of a treatment on a target
 #'
-#' `get_EC_logM()` runs [filter_trt_tgt()] and [get_drm()] to get a
+#' `get_EC_logM_drm()` runs [filter_trt_tgt()] and [get_drm()] to get a
 #' dose-response model of the effect of conc_logM on activity for the specified
 #' treatment and target, then extracts the effective concentration value of the
 #' model at the specified threshold using [drc::ED()].
@@ -45,8 +45,8 @@ get_drm <- function(data, activity_col="activity", ...){
 #'
 #'   Be careful: this parameter can also be confusing for data not normalized to
 #'   100. For example, if activity e.g. starts at 200 at 0 dose and increases to
-#'   500 at infinite dose, then `get_ED_logM(response_level=50)` will return the
-#'   concentration that gives an activity of 350 (50% of the way from 200 to
+#'   500 at infinite dose, then `get_ED_logM_drm(response_level=50)` will return
+#'   the concentration that gives an activity of 350 (50% of the way from 200 to
 #'   500).
 #'
 #' @inheritParams filter_trt_tgt
@@ -56,7 +56,7 @@ get_drm <- function(data, activity_col="activity", ...){
 #'   log10(molar) units.
 #' @export
 #'
-get_EC_logM <- function(data, trt, tgt, response_level=50,
+get_EC_logM_drm <- function(data, trt, tgt, response_level=50,
                    trt_col="treatment",
                    tgt_col="target",
                    activity_col="activity"){
