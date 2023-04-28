@@ -1,9 +1,8 @@
 #' Convert concentration from log(molar) to nanomolar units
 #'
 #' @param conc_logmolar Concentration in log(molar) units
-#'
 #' @return A number: the concentration in nM
-#'
+#' @export
 logM_to_nM <- function(conc_logmolar){
   return(10^conc_logmolar*1e9)
 }
@@ -11,9 +10,8 @@ logM_to_nM <- function(conc_logmolar){
 #' Convert concentration from nanomolar to log(molar) units
 #'
 #' @param conc_nM Concentration in nanomolar units
-#'
 #' @return A number: the concentration in log(molar)
-#'
+#' @export
 nM_to_logM <- function(conc_nM){
   return(log10(conc_nM/1e9))
 }
@@ -21,9 +19,7 @@ nM_to_logM <- function(conc_nM){
 #' Get the length of the longest string in a vector of strings
 #'
 #' @param strings A vector of strings
-#'
 #' @return Length of the longest string in the vector
-#'
 longest <- function(strings){
   lengths <- purrr::map(strings, nchar)
   lengths[[which.max(lengths)]]
@@ -39,7 +35,6 @@ longest <- function(strings){
 #'   of the logistic function in [drda::drda()]).
 #' @param lower Whether to generate Inf or -Inf values for undefined parameters.
 #'   Positive is default.
-#'
 #' @return A vector of the same length as the original vector. NA values in the
 #'   input vector are replaced with Inf or -Inf.
 param_bounds <- function(params, lower=FALSE){
