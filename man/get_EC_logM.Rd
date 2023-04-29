@@ -7,7 +7,7 @@
 get_EC_logM(model, level = 50)
 }
 \arguments{
-\item{model}{A model of type \code{drda}.}
+\item{model}{A logistic model of the type returned by \code{\link[drda:drda]{drda::drda()}}}
 
 \item{level}{The desired response level in percent. Percent of the way from
 the minimum-dose response to the maximum-dose response, regardless of
