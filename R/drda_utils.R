@@ -1,3 +1,15 @@
+#' Get the Hill slope from a `drda` model
+#'
+#' @param model A logistic model of the type returned by [drda::drda()]
+#'
+#' @return The Hill slope (growth rate) of the model. Unsigned (always
+#'   positive).
+#' @export
+#'
+get_hill_slope <- function(model){
+  stats::coefficients(model)["eta"]
+}
+
 #' Get effective logmolar concentration for a response level from a drda model
 #'
 #' @param model A model of type `drda`.
