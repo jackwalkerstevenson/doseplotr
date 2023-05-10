@@ -12,7 +12,7 @@ get_hill_slope <- function(model){
 
 #' Get effective logmolar concentration for a response level from a drda model
 #'
-#' @param model A logistic model of the type returned by [drda::drda()]
+#' @inheritParams get_hill_slope
 #' @param level The desired response level in percent. Percent of the way from
 #'   the minimum-dose response to the maximum-dose response, regardless of
 #'   whether the response is positive or negative. Default is 50, giving the
