@@ -32,10 +32,7 @@ get_EC_logM <- function(model, level=50){
 #' @return The effective concentration in nanomolar units.
 #' @export
 get_EC_nM <- function(model, level=50){
-  assertthat::assert_that(0<level && level<100,
-                          msg="level must be between 0 and 100")
-  # effective_dose expects level from 0 to 1
-  drda::effective_dose(model, level/100)[1] |> logM_to_nM()
+  get_EC_logM(model, level) |> logM_to_nM()
 }
 
 #' Estimate EC50 from one dose-response point and given model parameters
