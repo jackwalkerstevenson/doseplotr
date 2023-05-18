@@ -25,6 +25,7 @@ Imports:
     drc,
     drda,
     glue,
+    plater,
     purrr,
     readr,
     readxl,
