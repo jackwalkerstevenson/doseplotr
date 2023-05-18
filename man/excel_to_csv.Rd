@@ -2,7 +2,8 @@
 % Please edit documentation in R/import.R
 \name{excel_to_csv}
 \alias{excel_to_csv}
-\title{Convert an Excel file to csv.}
+\title{Convert an Excel file to csv.
+\code{excel_to_csv()} writes a CSV file for each sheet of the given Excel file.}
 \usage{
 excel_to_csv(excel_path)
 }
@@ -11,4 +12,5 @@ excel_to_csv(excel_path)
 }
 \description{
 Convert an Excel file to csv.
+\code{excel_to_csv()} writes a CSV file for each sheet of the given Excel file.
 }

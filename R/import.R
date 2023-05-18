@@ -18,20 +18,36 @@ make_log_conc <- function(df){
     error = function(e){ # if no conc_uM, try to convert from conc_nM
       df |>  dplyr::mutate(conc_logM = log10(.data$conc_nM/1e9))})}
 
-#' Convert an Excel file to csv.
+#' Convert a sheet of an Excel file to CSV.
+#'
+#' `excel_sheet_to_csv()` reads a specific sheet of an Excel file and writes it
+#' to a CSV file. The output filename is the name of the Excel file appended
+#' with an underscore and the name of the sheet, i.e.
+#' "excelfilename_sheetname.csv".
 #' @param excel_path Path to the Excel file. The file can be .xls or .xlsx
-excel_to_csv <- function(excel_path){
-  excel_data <- excel_path |> readxl::read_excel()
-  csv_path <- excel_path |> tools::file_path_sans_ext() |> paste0(".csv")
+#' @param sheet The name of the sheet in the Excel file to convert to CSV
+excel_sheet_to_csv <- function(excel_path, sheet){
+  excel_data <- excel_path |> readxl::read_excel(sheet = sheet)
+  csv_path <- excel_path |> tools::file_path_sans_ext() |>
+    paste0("_", sheet, ".csv")
   readr::write_csv(excel_data, csv_path)
+}
+
+#' Convert an Excel file to csv.
+#' `excel_to_csv()` writes a CSV file for each sheet of the given Excel file.
+#' @inheritParams excel_sheet_to_csv
+excel_to_csv <- function(excel_path){
+  sheets <- readxl::excel_sheets(excel_path)
+  # for each sheet, read_excel(excel_path, sheet), get path and write to csv
+  purrr::walk(sheets, \(sheet) excel_sheet_to_csv(excel_path, sheet))
 }
 
 #' Convert all Excel files in a directory to csv.
 #'
 #' `dir_excel_to_csv()` finds any files with .xls or .xlsx extensions in a
-#' directory and attempts to create .csv versions using `excel_to_csv`. Does
-#' nothing if no Excel files are present.
-#'
+#' directory and attempts to save a CSV file of each sheet in each Excel file.
+#' Output filenames are in the form "excelfilename_sheetname.csv". Does nothing
+#' if no Excel files are present.
 #' @param dir The directory containing Excel files to convert.
 #' @export
 dir_excel_to_csv <- function(dir){

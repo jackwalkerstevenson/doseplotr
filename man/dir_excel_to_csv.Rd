@@ -11,6 +11,7 @@ dir_excel_to_csv(dir)
 }
 \description{
 \code{dir_excel_to_csv()} finds any files with .xls or .xlsx extensions in a
-directory and attempts to create .csv versions using \code{excel_to_csv}. Does
-nothing if no Excel files are present.
+directory and attempts to save a CSV file of each sheet in each Excel file.
+Output filenames are in the form "excelfilename_sheetname.csv". Does nothing
+if no Excel files are present.
 }
