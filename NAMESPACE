@@ -2,6 +2,7 @@
 
 export(EC50_logM_from_point_model)
 export(EC50_logM_from_point_params)
+export(dir_excel_to_csv)
 export(filter_trt_tgt)
 export(get_EC_logM)
 export(get_EC_logM_drm)

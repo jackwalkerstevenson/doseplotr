@@ -27,6 +27,7 @@ Imports:
     glue,
     purrr,
     readr,
+    readxl,
     rlang,
     stats,
     tidyr
