@@ -50,7 +50,7 @@ EC50_logM_from_point_params <- function(alpha, delta, eta, conc_logM, activity){
   log(delta/(activity-alpha)-1)/eta + conc_logM |> unname()
 }
 
-#' Estimate EC50 from one dose-response point and 3 parameters of a given model
+#' Estimate log EC50 from one dose-response point and 3 parameters of a model
 #'
 #' @inheritParams get_hill_slope
 #' @inherit EC50_logM_from_point_params params return
@@ -59,4 +59,15 @@ EC50_logM_from_point_model <- function(model, conc_logM, activity){
   c <- stats::coefficients(model)
   EC50_logM_from_point_params(c["alpha"], c["delta"], c["eta"],
                               conc_logM, activity)
+}
+
+
+#' Estimate nM EC50 from one dose-response point and 3 parameters of a model
+#'
+#' @inherit EC50_logM_from_point_model params return
+#' @param conc_nM The dose of the single point measurement in nanomolar units
+#' @export
+EC50_nM_from_point_model <- function(model, conc_nM, activity){
+  EC50_logM_from_point_model(model, nM_to_logM(conc_nM), activity) |>
+    logM_to_nM()
 }
