@@ -92,6 +92,6 @@ preprocess_plate_data <- function(df){
     response = "readout"
   )
   df |>
-    dplyr::rename(any_of(renames)) |>
+    dplyr::rename(dplyr::any_of(renames)) |>
     make_log_dose() |> normalize_dose_response()
 }
