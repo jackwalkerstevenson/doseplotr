@@ -4,7 +4,7 @@
 \alias{normalize_dose_response}
 \title{Normalize dose-response data to 0-dose conditions}
 \usage{
-normalize_dose_response(df, .col_to_norm = "response")
+normalize_dose_response(df)
 }
 \arguments{
 \item{df}{A dataframe containing dose-response data. Should contain the
@@ -12,20 +12,15 @@ following columns:
 \itemize{
 \item "treatment", the condition being dosed
 \item "target", the target of the treatment, e.g. a cell line
-\item "dose_logM", the dose of the treatment in log10(molar) units. Should
+\item "log_dose", the dose of the treatment in log10(molar) units. Should
 include control data for 0 dose (-Inf in log(molar) units) for
 each treatment condition.
-\item A column of response data, the name of which is indicated by
-\code{.col_to_norm}.
+\item "response", the response observed at the given dose.
 }}
-
-\item{.col_to_norm}{The name of the column to normalize within each treatment
-condition. Default is "response".}
 }
 \value{
 The input dataframe with the addition of a new column of normalized
-data. The name of the new column is the name of \code{col_to_norm} appended with
-an underscore and "norm", e.g. "response_norm".
+data. The name of the new column is "response_norm".
 }
 \description{
 \code{normalize_dose_response()} independently normalizes each treatment/target

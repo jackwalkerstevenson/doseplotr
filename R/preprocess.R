@@ -1,11 +1,12 @@
-#' Create a dose_logM column from dose_uM or dose_nM columns
+#' Create a log_dose column from dose_uM or dose_nM columns
 #'
-#' `make_log_dose()` takes a dataframe that contains a column called "dose_uM" or "dose_nM" and creates a column called log_dose"
+#' `make_log_dose()` takes a dataframe that contains a column called "dose_uM"
+#' or "dose_nM" and creates a column called log_dose" from
 #' @param df A dataframe containing either a column called "dose_nM" or a column
-#'   called "dose_uM", representing dose in nanomolar or micromolar
-#'   units respectively.
+#'   called "dose_uM", representing dose in nanomolar or micromolar units
+#'   respectively.
 #'
-#' @return The same dataframe with an additional column "dose_logM" representing
+#' @return The same dataframe with an additional column "log_dose" representing
 #'   dose in log10(molar) units.
 #' @export
 #'
@@ -37,20 +38,14 @@ make_log_dose <- function(df){
 #'   following columns:
 #'  - "treatment", the condition being dosed
 #'  - "target", the target of the treatment, e.g. a cell line
-#'  - "dose_logM", the dose of the treatment in log10(molar) units. Should
+#'  - "log_dose", the dose of the treatment in log10(molar) units. Should
 #'   include control data for 0 dose (-Inf in log(molar) units) for
 #'   each treatment condition.
-#'  - A column of response data, the name of which is indicated by
-#'   `.col_to_norm`.
-#' @param .col_to_norm The name of the column to normalize within each treatment
-#'   condition. Default is "response".
+#'  - "response", the response observed at the given dose.
 #' @return The input dataframe with the addition of a new column of normalized
-#'   data. The name of the new column is the name of `col_to_norm` appended with
-#'   an underscore and "norm", e.g. "response_norm".
-#' @importFrom rlang :=
+#'   data. The name of the new column is "response_norm".
 #' @export
-normalize_dose_response <- function(df, .col_to_norm="response"){
-  norm_colname <- glue::glue("{.col_to_norm}_norm")
+normalize_dose_response <- function(df){
   # list every combo of treatment and target for which there are any values
   all_conditions <- df |>
     dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
@@ -59,8 +54,8 @@ normalize_dose_response <- function(df, .col_to_norm="response"){
   ctrl_means <- df |>
     dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
     # filter for controls: 0 dose = -Inf log(dose)
-    dplyr::filter(.data[["dose_logM"]] == -Inf) |>
-    dplyr::summarize(ctrl_mean = mean(.data[[.col_to_norm]]),
+    dplyr::filter(.data[["log_dose"]] == -Inf) |>
+    dplyr::summarize(ctrl_mean = mean(.data[["response"]]),
                      ctrl_replicates = dplyr::n())
   # join ctrl means to conditions to make sure every condition has a control
   conditions_with_ctrls <- dplyr::inner_join(all_conditions, ctrl_means)
@@ -68,8 +63,8 @@ normalize_dose_response <- function(df, .col_to_norm="response"){
                           msg="controls not present for all conditions")
   # join ctrl means to original df and normalize to them as 100
   df |> dplyr::left_join(ctrl_means, by = c("treatment", "target")) |>
-    dplyr::mutate("{norm_colname}" :=
-                    .data[[.col_to_norm]] / .data[["ctrl_mean"]] * 100)
+    dplyr::mutate(response_norm =
+                    .data[["response"]] / .data[["ctrl_mean"]] * 100)
 }
 
 #' Preprocess plate-based dose-response data.
