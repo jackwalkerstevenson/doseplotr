@@ -85,6 +85,7 @@ normalize_dose_response <- function(df, .col_to_norm="response"){
 #'   - "response" or "readout" (convert to "response_norm")
 #' @return A dataframe containing processed data.
 preprocess_plate_data <- function(df){
+  # list of columns to rename if present
   renames <- c(
     treatment = "compound",
     dose_nM = "conc_nM",
