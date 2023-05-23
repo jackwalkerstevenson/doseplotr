@@ -4,7 +4,7 @@
 \alias{normalize_dose_response}
 \title{Normalize dose-response data to 0-concentration conditions}
 \usage{
-normalize_dose_response(df, col_to_norm = "response")
+normalize_dose_response(df, .col_to_norm = "response")
 }
 \arguments{
 \item{df}{A dataframe containing dose-response data. Should contain the
@@ -16,10 +16,10 @@ following columns:
 include control data for 0 concentration (-Inf in log(molar) units) for
 each treatment condition.
 \item A column of response data, the name of which is indicated by
-\code{col_to_norm}.
+\code{.col_to_norm}.
 }}
 
-\item{col_to_norm}{The name of the column to normalize within each treatment
+\item{.col_to_norm}{The name of the column to normalize within each treatment
 condition. Default is "response".}
 }
 \value{

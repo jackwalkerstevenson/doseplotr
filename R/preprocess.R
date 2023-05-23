@@ -21,28 +21,28 @@
 #'   include control data for 0 concentration (-Inf in log(molar) units) for
 #'   each treatment condition.
 #'  - A column of response data, the name of which is indicated by
-#'   `col_to_norm`.
-#' @param col_to_norm The name of the column to normalize within each treatment
+#'   `.col_to_norm`.
+#' @param .col_to_norm The name of the column to normalize within each treatment
 #'   condition. Default is "response".
 #' @return The input dataframe with the addition of a new column of normalized
 #'   data. The name of the new column is the name of `col_to_norm` appended with
 #'   an underscore and "norm", e.g. "response_norm".
+#' @importFrom rlang :=
 #' @export
-normalize_dose_response <- function(df, col_to_norm="response"){
-# todo: figure out how to use norm_colname as actual column name in mutate
-  norm_colname <- glue::glue("{col_to_norm}_norm")
-# todo: check that there are >0 -Inf values for each treatnent to normalize to
+normalize_dose_response <- function(df, .col_to_norm="response"){
+  norm_colname <- glue::glue("{.col_to_norm}_norm")
+# todo: check that there are >0 -Inf values for each treatment to normalize to
   # make a list of every combo of treatment and target
   # then check that each has >0 -Inf values
   # calculate mean control (0-conc) responses for treatment/target combinations
-  ctrl_means <- df |> dplyr::group_by(treatment, target) |>
-    dplyr::filter(conc_logM == -Inf) |> # get controls: 0 conc = -Inf log(conc)
-    dplyr::summarize(ctrl_mean = mean(.data[[col_to_norm]]),
+  ctrl_means <- df |> dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
+    dplyr::filter(.data[["conc_logM"]] == -Inf) |> # get controls: 0 conc = -Inf log(conc)
+    dplyr::summarize(ctrl_mean = mean(.data[[.col_to_norm]]),
                      ctrl_replicates = dplyr::n())
   # join ctrl means to original df and normalize to them as 100
   df |> dplyr::left_join(ctrl_means, by = c("treatment", "target")) |>
-    dplyr::mutate(response_norm =
-                    .data[[col_to_norm]] / .data[["ctrl_mean"]] * 100)
+    dplyr::mutate("{norm_colname}" :=
+                    .data[[.col_to_norm]] / .data[["ctrl_mean"]] * 100)
 }
 
 #' Preprocess plate-based dose-response data
