@@ -1,24 +1,24 @@
-#' Create a conc_logM column from conc_uM or conc_nM columns
+#' Create a dose_logM column from dose_uM or dose_nM columns
 #'
-#' @param df A dataframe containing either a column called "conc_nM" or a column
-#'   called "conc_uM", representing concentration in nanomolar or micromolar
+#' @param df A dataframe containing either a column called "dose_nM" or a column
+#'   called "dose_uM", representing dose in nanomolar or micromolar
 #'   units respectively.
 #'
-#' @return The same dataframe with an additional column "conc_logM" representing
-#'   concentration in log10(molar) units.
+#' @return The same dataframe with an additional column "dose_logM" representing
+#'   dose in log10(molar) units.
 #' @export
 #'
 #' @examples
 #' df <- data.frame("treatment" = c("foo", "bar", "baz"),
-#'                  "conc_nM" = c(1, 10, 100))
-#' make_log_conc(df)
-make_log_conc <- function(df){
-  tryCatch({ # try to convert from conc_uM
-    df |> dplyr::mutate(conc_logM = log10(.data$conc_uM/1e6))},
-    error = function(e){ # if no conc_uM, try to convert from conc_nM
-      df |>  dplyr::mutate(conc_logM = log10(.data$conc_nM/1e9))})}
+#'                  "dose_nM" = c(1, 10, 100))
+#' make_log_dose(df)
+make_log_dose <- function(df){
+  tryCatch({ # try to convert from dose_uM
+    df |> dplyr::mutate(dose_logM = log10(.data$dose_uM/1e6))},
+    error = function(e){ # if no dose_uM, try to convert from dose_nM
+      df |>  dplyr::mutate(dose_logM = log10(.data$dose_nM/1e9))})}
 
-#' Normalize dose-response data to 0-concentration conditions
+#' Normalize dose-response data to 0-dose conditions
 #'
 #' `normalize_dose_response()` independently normalizes each treatment/target
 #' combination in a dataset of dose-response data to its own set of control
@@ -29,15 +29,15 @@ make_log_conc <- function(df){
 #'
 #' Data from each treatment/target combination is normalized to the average of
 #' the control data points for that treatment/target combination, which are
-#' indicated by a concentration of 0. This function assumes that each treatment
+#' indicated by a dose of 0. This function assumes that each treatment
 #' has its own control data and does not support sharing control data points
 #' between treatments. Throws an error if any condition has no controls.
 #' @param df A dataframe containing dose-response data. Should contain the
 #'   following columns:
 #'  - "treatment", the condition being dosed
 #'  - "target", the target of the treatment, e.g. a cell line
-#'  - "conc_logM", the dose of the treatment in log10(molar) units. Should
-#'   include control data for 0 concentration (-Inf in log(molar) units) for
+#'  - "dose_logM", the dose of the treatment in log10(molar) units. Should
+#'   include control data for 0 dose (-Inf in log(molar) units) for
 #'   each treatment condition.
 #'  - A column of response data, the name of which is indicated by
 #'   `.col_to_norm`.
@@ -54,11 +54,11 @@ normalize_dose_response <- function(df, .col_to_norm="response"){
   all_conditions <- df |>
     dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
     dplyr::summarize()
-  # calculate mean control (0-conc) responses for treatment/target combos
+  # calculate mean control (0-dose) responses for treatment/target combos
   ctrl_means <- df |>
     dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
-    # filter for controls: 0 conc = -Inf log(conc)
-    dplyr::filter(.data[["conc_logM"]] == -Inf) |>
+    # filter for controls: 0 dose = -Inf log(dose)
+    dplyr::filter(.data[["dose_logM"]] == -Inf) |>
     dplyr::summarize(ctrl_mean = mean(.data[[.col_to_norm]]),
                      ctrl_replicates = dplyr::n())
   # join ctrl means to conditions to make sure every condition has a control
@@ -71,15 +71,27 @@ normalize_dose_response <- function(df, .col_to_norm="response"){
                     .data[[.col_to_norm]] / .data[["ctrl_mean"]] * 100)
 }
 
-#' Preprocess plate-based dose-response data
+#' Preprocess plate-based dose-response data.
+#'
+#' `preprocess_plate_data()` prepares raw dose-response data for analysis. It
+#' converts nonstandard column names to standard ones, converts dose to log
+#' units and normalizes response values for each treatment/target combination to
+#' their own controls.
 #' @param df A dataframe, such as the output of `import_plater_CSVs()`,
 #'   containing raw plate data. Should contain the following columns:
-#'   - "treatment"
+#'   - "treatment" or "compound" (convert to "treatment")
 #'   - "target"
-#'   - "dose_nM" or "dose_uM"
-#'   - "response"
+#'   - "dose_nM" or "dose_uM" or "conc_nM" or "conc_uM" (convert to "log_dose")
+#'   - "response" or "readout" (convert to "response_norm")
 #' @return A dataframe containing processed data.
 preprocess_plate_data <- function(df){
-  # filter for treatments and targets if those variables exist
-  df |> make_log_conc() |> normalize_dose_response()
+  renames <- c(
+    treatment = "compound",
+    dose_nM = "conc_nM",
+    dose_uM = "conc_uM",
+    response = "readout"
+  )
+  df |>
+    dplyr::rename(any_of(renames)) |>
+    make_log_dose() |> normalize_dose_response()
 }

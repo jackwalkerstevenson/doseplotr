@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{preprocess_plate_data}
 \alias{preprocess_plate_data}
-\title{Preprocess plate-based dose-response data}
+\title{Preprocess plate-based dose-response data.}
 \usage{
 preprocess_plate_data(df)
 }
@@ -10,15 +10,18 @@ preprocess_plate_data(df)
 \item{df}{A dataframe, such as the output of \code{import_plater_CSVs()},
 containing raw plate data. Should contain the following columns:
 \itemize{
-\item "treatment"
+\item "treatment" or "compound" (convert to "treatment")
 \item "target"
-\item "dose_nM" or "dose_uM"
-\item "response"
+\item "dose_nM" or "dose_uM" or "conc_nM" or "conc_uM" (convert to "log_dose")
+\item "response" or "readout" (convert to "response_norm")
 }}
 }
 \value{
 A dataframe containing processed data.
 }
 \description{
-Preprocess plate-based dose-response data
+\code{preprocess_plate_data()} prepares raw dose-response data for analysis. It
+converts nonstandard column names to standard ones, converts dose to log
+units and normalizes response values for each treatment/target combination to
+their own controls.
 }

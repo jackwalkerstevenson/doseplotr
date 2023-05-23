@@ -2,7 +2,7 @@
 % Please edit documentation in R/preprocess.R
 \name{normalize_dose_response}
 \alias{normalize_dose_response}
-\title{Normalize dose-response data to 0-concentration conditions}
+\title{Normalize dose-response data to 0-dose conditions}
 \usage{
 normalize_dose_response(df, .col_to_norm = "response")
 }
@@ -12,8 +12,8 @@ following columns:
 \itemize{
 \item "treatment", the condition being dosed
 \item "target", the target of the treatment, e.g. a cell line
-\item "conc_logM", the dose of the treatment in log10(molar) units. Should
-include control data for 0 concentration (-Inf in log(molar) units) for
+\item "dose_logM", the dose of the treatment in log10(molar) units. Should
+include control data for 0 dose (-Inf in log(molar) units) for
 each treatment condition.
 \item A column of response data, the name of which is indicated by
 \code{.col_to_norm}.
@@ -38,7 +38,7 @@ mean of the untreated wells of the same condition on the same plate.
 \details{
 Data from each treatment/target combination is normalized to the average of
 the control data points for that treatment/target combination, which are
-indicated by a concentration of 0. This function assumes that each treatment
+indicated by a dose of 0. This function assumes that each treatment
 has its own control data and does not support sharing control data points
 between treatments. Throws an error if any condition has no controls.
 }
