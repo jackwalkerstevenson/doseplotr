@@ -2,7 +2,7 @@
 % Please edit documentation in R/import.R
 \name{import_plater_CSVs}
 \alias{import_plater_CSVs}
-\title{Import an entire directory of \code{plater}-formatted CSVs}
+\title{Import an entire directory of \code{plater}-formatted CSVs without processing}
 \usage{
 import_plater_CSVs(dir)
 }

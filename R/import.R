@@ -28,7 +28,7 @@ excel_to_csv <- function(excel_path){
 #' @param ext Extension for which to find files, e.g. "xls". Note this is a
 #'   regex, so "xls" will find both .xls and .xlsx files.
 #' @return A vector of file paths with the given extension.
-get_paths <- function(dir, ext){
+get_paths_with_ext <- function(dir, ext){
   # find file names in given directory
   c(list.files(dir, pattern = glue::glue("^[[:alnum:]].*{ext}"))) |>
     {\(files) file.path(dir, files)}() # reconstruct file paths
@@ -44,11 +44,11 @@ get_paths <- function(dir, ext){
 #' @export
 dir_excel_to_csv <- function(dir){
   # find Excel files. Only alphanumeric filenames to avoid temp files
-  get_paths(dir, "xls") |>
+  get_paths_with_ext(dir, "xls") |>
     purrr::walk(excel_to_csv) # convert each file
 }
 
-#' Import an entire directory of `plater`-formatted CSVs
+#' Import an entire directory of `plater`-formatted CSVs without processing
 #'
 #' `import_plater_CSVs()` attempts to use `plater::read_plates()` to import
 #' every CSV file in the given directory. Will only work if every CSV file is in
@@ -59,7 +59,7 @@ dir_excel_to_csv <- function(dir){
 import_plater_CSVs <- function(dir){
   # plate_filenames <- c(list.files(input_directory, pattern = "*.csv")) # get file names
   # plate_paths <- paste0(input_directory, plate_filenames) # full file paths
-  plate_paths <- get_paths(dir, "csv")
+  plate_paths <- get_paths_with_ext(dir, "csv")
   plate_IDs <- seq(1,length(plate_paths))  # create sequential plate IDs
   plater::read_plates(plate_paths, plate_IDs)
 }
