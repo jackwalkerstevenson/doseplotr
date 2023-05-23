@@ -72,14 +72,14 @@ normalize_dose_response <- function(df, .col_to_norm="response"){
 }
 
 #' Preprocess plate-based dose-response data
-#'
-#' @param df A dataframe containing raw plate data
-#' @param treatments Optional vector of treatments to filter for
-#' @param targets Optional vector of targets to filter for
-#'
+#' @param df A dataframe, such as the output of `import_plater_CSVs()`,
+#'   containing raw plate data. Should contain the following columns:
+#'   - "treatment"
+#'   - "target"
+#'   - "dose_nM" or "dose_uM"
+#'   - "response"
 #' @return A dataframe containing processed data.
-#' @export
-preprocess_plate_data <- function(df, treatments, targets){
+preprocess_plate_data <- function(df){
   # filter for treatments and targets if those variables exist
-  df |> make_log_conc()
+  df |> make_log_conc() |> normalize_dose_response()
 }

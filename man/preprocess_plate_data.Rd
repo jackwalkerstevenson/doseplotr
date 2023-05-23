@@ -4,14 +4,17 @@
 \alias{preprocess_plate_data}
 \title{Preprocess plate-based dose-response data}
 \usage{
-preprocess_plate_data(df, treatments, targets)
+preprocess_plate_data(df)
 }
 \arguments{
-\item{df}{A dataframe containing raw plate data}
-
-\item{treatments}{Optional vector of treatments to filter for}
-
-\item{targets}{Optional vector of targets to filter for}
+\item{df}{A dataframe, such as the output of \code{import_plater_CSVs()},
+containing raw plate data. Should contain the following columns:
+\itemize{
+\item "treatment"
+\item "target"
+\item "dose_nM" or "dose_uM"
+\item "response"
+}}
 }
 \value{
 A dataframe containing processed data.
