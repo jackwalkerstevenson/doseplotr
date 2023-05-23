@@ -4,12 +4,12 @@
 \alias{EC50_logM_from_point_model}
 \title{Estimate log EC50 from one dose-response point and 3 parameters of a model}
 \usage{
-EC50_logM_from_point_model(model, conc_logM, activity)
+EC50_logM_from_point_model(model, log_dose, activity)
 }
 \arguments{
 \item{model}{A logistic model of the type returned by \code{\link[drda:drda]{drda::drda()}}}
 
-\item{conc_logM}{The dose of the single point measurement in log(molar) units}
+\item{log_dose}{The dose of the single point measurement in log units}
 
 \item{activity}{The activity (NOT percent inhibition) observed at the tested
 concentration}

@@ -4,7 +4,7 @@
 \alias{EC50_logM_from_point_params}
 \title{Estimate EC50 from one dose-response point and given model parameters}
 \usage{
-EC50_logM_from_point_params(alpha, delta, eta, conc_logM, activity)
+EC50_logM_from_point_params(alpha, delta, eta, log_dose, activity)
 }
 \arguments{
 \item{alpha}{The alpha parameter from a \code{drda} model.}
@@ -13,7 +13,7 @@ EC50_logM_from_point_params(alpha, delta, eta, conc_logM, activity)
 
 \item{eta}{The eta parameter from a \code{drda} model.}
 
-\item{conc_logM}{The dose of the single point measurement in log(molar) units}
+\item{log_dose}{The dose of the single point measurement in log units}
 
 \item{activity}{The activity (NOT percent inhibition) observed at the tested
 concentration}

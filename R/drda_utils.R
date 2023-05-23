@@ -40,14 +40,14 @@ get_EC_nM <- function(model, level=50){
 #' @param alpha The alpha parameter from a `drda` model.
 #' @param delta The delta parameter from a `drda` model.
 #' @param eta The eta parameter from a `drda` model.
-#' @param conc_logM The dose of the single point measurement in log(molar) units
+#' @param log_dose The dose of the single point measurement in log units
 #' @param activity The activity (NOT percent inhibition) observed at the tested
 #'   concentration
 #' @return The estimated EC50 in log10(molar) units
 #' @export
-EC50_logM_from_point_params <- function(alpha, delta, eta, conc_logM, activity){
+EC50_logM_from_point_params <- function(alpha, delta, eta, log_dose, activity){
   # 4-parameter logistic equation solved for phi
-  log(delta/(activity-alpha)-1)/eta + conc_logM |> unname()
+  log(delta/(activity-alpha)-1)/eta + log_dose |> unname()
 }
 
 #' Estimate log EC50 from one dose-response point and 3 parameters of a model
@@ -55,10 +55,10 @@ EC50_logM_from_point_params <- function(alpha, delta, eta, conc_logM, activity){
 #' @inheritParams get_hill_slope
 #' @inherit EC50_logM_from_point_params params return
 #' @export
-EC50_logM_from_point_model <- function(model, conc_logM, activity){
+EC50_logM_from_point_model <- function(model, log_dose, activity){
   c <- stats::coefficients(model)
   EC50_logM_from_point_params(c["alpha"], c["delta"], c["eta"],
-                              conc_logM, activity)
+                              log_dose, activity)
 }
 
 
