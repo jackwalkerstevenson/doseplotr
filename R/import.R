@@ -48,18 +48,20 @@ dir_excel_to_csv <- function(dir){
     purrr::walk(excel_to_csv) # convert each file
 }
 
-#' Import an entire directory of `plater`-formatted CSVs without processing
+#' Read an entire directory of `plater`-formatted CSVs without processing
 #'
-#' `import_plater_CSVs()` attempts to use `plater::read_plates()` to import
-#' every CSV file in the given directory. Will only work if every CSV file is in
-#' proper `plater` format. Does not process the data.
+#' `read_plater_CSVs()` attempts to use `plater::read_plates()` to import every
+#' CSV file in the given directory. Will only work if every CSV file is in
+#' proper `plater` format. Does not process the data. Throws an error if no CSV
+#' files are present.
 #' @param dir The directory from which to import all CSV files.
 #' @return A data frame containing the combined data from all the files.
 #' @export
-import_plater_CSVs <- function(dir){
-  # plate_filenames <- c(list.files(input_directory, pattern = "*.csv")) # get file names
-  # plate_paths <- paste0(input_directory, plate_filenames) # full file paths
+read_plater_dir <- function(dir){
   plate_paths <- get_paths_with_ext(dir, "csv")
+  assertthat::assert_that(length(plate_paths) > 0,
+                          msg = glue::glue("No CSV files found in directory ",
+                                           "\"{dir}\""))
   plate_IDs <- seq(1,length(plate_paths))  # create sequential plate IDs
   plater::read_plates(plate_paths, plate_IDs)
 }
