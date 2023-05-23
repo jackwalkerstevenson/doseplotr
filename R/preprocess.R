@@ -1,18 +1,17 @@
 #' Normalize dose-response data to 0-concentration conditions
 #'
 #' `normalize_dose_response()` independently normalizes each treatment/target
-#' combination in a dataset of dose-response data. It is intended to be used for
-#' situations such as plate-based assays where one plate contains replicate dose
-#' series for e.g. one treatment compound on two different target cell lines, so
-#' that is it appropriate to normalize the data from each cell line to the mean
-#' of the untreated wells of that cell line on that plate (but not untreated
-#' wells from the same cell line on other plates).
+#' combination in a dataset of dose-response data to its own set of control
+#' values. It is intended to be used for situations such as plate-based assays
+#' where each plate contains replicate dose series that include control wells,
+#' so that is it appropriate to normalize the data from each treatment to the
+#' mean of the untreated wells of the same condition on the same plate.
 #'
 #' Data from each treatment/target combination is normalized to the average of
 #' the control data points for that treatment/target combination, which are
 #' indicated by a concentration of 0. This function assumes that each treatment
 #' has its own control data and does not support sharing control data points
-#' between treatments.
+#' between treatments. Throws an error if any condition has no controls.
 #' @param df A dataframe containing dose-response data. Should contain the
 #'   following columns:
 #'  - "treatment", the condition being dosed
@@ -31,14 +30,21 @@
 #' @export
 normalize_dose_response <- function(df, .col_to_norm="response"){
   norm_colname <- glue::glue("{.col_to_norm}_norm")
-# todo: check that there are >0 -Inf values for each treatment to normalize to
-  # make a list of every combo of treatment and target
-  # then check that each has >0 -Inf values
-  # calculate mean control (0-conc) responses for treatment/target combinations
-  ctrl_means <- df |> dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
-    dplyr::filter(.data[["conc_logM"]] == -Inf) |> # get controls: 0 conc = -Inf log(conc)
+  # list every combo of treatment and target for which there are any values
+  all_conditions <- df |>
+    dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
+    dplyr::summarize()
+  # calculate mean control (0-conc) responses for treatment/target combos
+  ctrl_means <- df |>
+    dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>
+    # filter for controls: 0 conc = -Inf log(conc)
+    dplyr::filter(.data[["conc_logM"]] == -Inf) |>
     dplyr::summarize(ctrl_mean = mean(.data[[.col_to_norm]]),
                      ctrl_replicates = dplyr::n())
+  # join ctrl means to conditions to make sure every condition has a control
+  conditions_with_ctrls <- dplyr::inner_join(all_conditions, ctrl_means)
+  assertthat::assert_that(nrow(conditions_with_ctrls) == nrow(all_conditions),
+                          msg="controls not present for all conditions")
   # join ctrl means to original df and normalize to them as 100
   df |> dplyr::left_join(ctrl_means, by = c("treatment", "target")) |>
     dplyr::mutate("{norm_colname}" :=

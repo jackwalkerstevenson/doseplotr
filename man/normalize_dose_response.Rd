@@ -29,17 +29,16 @@ an underscore and "norm", e.g. "response_norm".
 }
 \description{
 \code{normalize_dose_response()} independently normalizes each treatment/target
-combination in a dataset of dose-response data. It is intended to be used for
-situations such as plate-based assays where one plate contains replicate dose
-series for e.g. one treatment compound on two different target cell lines, so
-that is it appropriate to normalize the data from each cell line to the mean
-of the untreated wells of that cell line on that plate (but not untreated
-wells from the same cell line on other plates).
+combination in a dataset of dose-response data to its own set of control
+values. It is intended to be used for situations such as plate-based assays
+where each plate contains replicate dose series that include control wells,
+so that is it appropriate to normalize the data from each treatment to the
+mean of the untreated wells of the same condition on the same plate.
 }
 \details{
 Data from each treatment/target combination is normalized to the average of
 the control data points for that treatment/target combination, which are
 indicated by a concentration of 0. This function assumes that each treatment
 has its own control data and does not support sharing control data points
-between treatments.
+between treatments. Throws an error if any condition has no controls.
 }
