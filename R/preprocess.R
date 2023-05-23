@@ -28,7 +28,6 @@
 #'   data. The name of the new column is the name of `col_to_norm` appended with
 #'   an underscore and "norm", e.g. "response_norm".
 #' @export
-#' @examples
 normalize_dose_response <- function(df, col_to_norm="response"){
 # todo: figure out how to use norm_colname as actual column name in mutate
   norm_colname <- glue::glue("{col_to_norm}_norm")
