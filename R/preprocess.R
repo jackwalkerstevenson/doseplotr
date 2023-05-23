@@ -9,7 +9,6 @@
 #' @return The same dataframe with an additional column "log_dose" representing
 #'   dose in log10(molar) units.
 #' @export
-#'
 #' @examples
 #' df <- data.frame("treatment" = c("foo", "bar", "baz"),
 #'                  "dose_nM" = c(1, 10, 100))
@@ -80,6 +79,13 @@ normalize_dose_response <- function(df){
 #'   - "dose_nM" or "dose_uM" or "conc_nM" or "conc_uM" (convert to "log_dose")
 #'   - "response" or "readout" (convert to "response_norm")
 #' @return A dataframe containing processed data.
+#' @export
+#' @examples
+#' df <- data.frame("compound" = c("foo", "foo", "foo", "foo"),
+#'                  "target" = c("subject", "subject", "subject", "subject"),
+#'                  "conc_nM" = c(0, 1, 10, 100),
+#'                  "readout" = c(100, 100, 90, 2))
+#' preprocess_plate_data(df)
 preprocess_plate_data <- function(df){
   # list of columns to rename if present
   renames <- c(

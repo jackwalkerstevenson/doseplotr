@@ -25,3 +25,10 @@ converts nonstandard column names to standard ones, converts dose to log
 units and normalizes response values for each treatment/target combination to
 their own controls.
 }
+\examples{
+df <- data.frame("compound" = c("foo", "foo", "foo", "foo"),
+                 "target" = c("subject", "subject", "subject", "subject"),
+                 "conc_nM" = c(0, 1, 10, 100),
+                 "readout" = c(100, 100, 90, 2))
+preprocess_plate_data(df)
+}
