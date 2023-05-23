@@ -1,5 +1,6 @@
 #' Create a dose_logM column from dose_uM or dose_nM columns
 #'
+#' `make_log_dose()` takes a dataframe that contains a column called "dose_uM" or "dose_nM" and creates a column called log_dose"
 #' @param df A dataframe containing either a column called "dose_nM" or a column
 #'   called "dose_uM", representing dose in nanomolar or micromolar
 #'   units respectively.
@@ -14,9 +15,9 @@
 #' make_log_dose(df)
 make_log_dose <- function(df){
   tryCatch({ # try to convert from dose_uM
-    df |> dplyr::mutate(dose_logM = log10(.data$dose_uM/1e6))},
+    df |> dplyr::mutate(log_dose = log10(.data$dose_uM/1e6))},
     error = function(e){ # if no dose_uM, try to convert from dose_nM
-      df |>  dplyr::mutate(dose_logM = log10(.data$dose_nM/1e9))})}
+      df |>  dplyr::mutate(log_dose = log10(.data$dose_nM/1e9))})}
 
 #' Normalize dose-response data to 0-dose conditions
 #'
