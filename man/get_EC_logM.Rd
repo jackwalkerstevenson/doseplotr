@@ -2,7 +2,7 @@
 % Please edit documentation in R/drda_utils.R
 \name{get_EC_logM}
 \alias{get_EC_logM}
-\title{Get effective logmolar concentration for a response level from a drda model}
+\title{Get effective log10 dose for a response level from a drda model}
 \usage{
 get_EC_logM(model, level = 50)
 }
@@ -15,8 +15,8 @@ whether the response is positive or negative. Default is 50, giving the
 classic EC50.}
 }
 \value{
-The effective concentration in log10(molar) units.
+The effective dose in log10 units.
 }
 \description{
-Get effective logmolar concentration for a response level from a drda model
+Get effective log10 dose for a response level from a drda model
 }

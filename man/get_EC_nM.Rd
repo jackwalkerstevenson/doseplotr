@@ -2,7 +2,7 @@
 % Please edit documentation in R/drda_utils.R
 \name{get_EC_nM}
 \alias{get_EC_nM}
-\title{Get effective nanomolar concentration for a response level from a drda model}
+\title{Get effective nanomolar dose for a response level from a drda model}
 \usage{
 get_EC_nM(model, level = 50)
 }
@@ -15,8 +15,8 @@ whether the response is positive or negative. Default is 50, giving the
 classic EC50.}
 }
 \value{
-The effective concentration in nanomolar units.
+The effective dose in nanomolar units.
 }
 \description{
-Get effective nanomolar concentration for a response level from a drda model
+Get effective nanomolar dose for a response level from a drda model
 }

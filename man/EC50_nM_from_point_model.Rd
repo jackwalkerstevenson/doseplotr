@@ -4,18 +4,18 @@
 \alias{EC50_nM_from_point_model}
 \title{Estimate nM EC50 from one dose-response point and 3 parameters of a model}
 \usage{
-EC50_nM_from_point_model(model, conc_nM, activity)
+EC50_nM_from_point_model(model, dose_nM, activity)
 }
 \arguments{
 \item{model}{A logistic model of the type returned by \code{\link[drda:drda]{drda::drda()}}}
 
-\item{conc_nM}{The dose of the single point measurement in nanomolar units}
+\item{dose_nM}{The dose of the single point measurement in nanomolar units}
 
 \item{activity}{The activity (NOT percent inhibition) observed at the tested
-concentration}
+dose}
 }
 \value{
-The estimated EC50 in log10(molar) units
+The estimated EC50 in log10 units
 }
 \description{
 Estimate nM EC50 from one dose-response point and 3 parameters of a model

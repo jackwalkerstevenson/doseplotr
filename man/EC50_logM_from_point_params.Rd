@@ -16,10 +16,10 @@ EC50_logM_from_point_params(alpha, delta, eta, log_dose, activity)
 \item{log_dose}{The dose of the single point measurement in log units}
 
 \item{activity}{The activity (NOT percent inhibition) observed at the tested
-concentration}
+dose}
 }
 \value{
-The estimated EC50 in log10(molar) units
+The estimated EC50 in log10 units
 }
 \description{
 Estimate EC50 from one dose-response point and given model parameters
