@@ -117,6 +117,6 @@ import_selectscreen <- function(input_filename){
     tidyr::pivot_longer(cols = c(.data$..Inhibition.1, .data$..Inhibition.2),
                         names_to = NULL, values_to = "pct_inhibition") |>
     # convert conc to log molar and convert percent inhibition to activity
-    dplyr::mutate(conc_logM = nM_to_logM(.data$Compound.Conc)) |> # conc is nM
+    dplyr::mutate(log_dose = nM_to_logM(.data$Compound.Conc)) |> # conc is nM
     dplyr::mutate(activity = 100 - .data$pct_inhibition)
 }
