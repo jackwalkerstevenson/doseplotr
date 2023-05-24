@@ -11,7 +11,7 @@
 #'   The dataframe should contain the following columns:
 #'
 #' * "activity" (default) or other activity column name (see `activity_col`)
-#' * conc_logM: concentration of treatment in log(molar) units
+#' * log_dose: dose of treatment in log10 units
 #' @param activity_col Name of the column containing activity of treatment.
 #'   Default is "activity". Typical alternatives might include e.g.
 #'   "percent_inhibition", "viability", "growth".
@@ -22,7 +22,7 @@ get_drda_helper <- function(data, activity_col="activity", ...){
   assertthat::assert_that(assertthat::has_name(data, activity_col),
                           msg = glue::glue("column {activity_col} not found"))
   # 4-param logistic model on pre-log-transformed data
-  return(drda::drda(get({{ activity_col }})~conc_logM, data = data, ...))
+  return(drda::drda(get({{ activity_col }})~log_dose, data = data, ...))
 }
 
 #' Get a drda dose-response model for the activity of a treatment on a target
@@ -33,20 +33,19 @@ get_drda_helper <- function(data, activity_col="activity", ...){
 #' fits.
 #'
 #' If the height of the model is negative (if activity decreases at higher
-#' dose), the height is bounded at the height of the unbounded 0-concentration
-#' asymptote to avoid producing models with infinite-concentration asymptotes
-#' far below 0. Note that after the model is refit with this bound, the height
-#' of the 0-concentration asymptote may decrease slightly, so the
-#' maximum-concentration asymptote may still end up slightly below 0.
+#' dose), the height is bounded at the height of the unbounded 0-dose asymptote
+#' to avoid producing models with infinite-dose asymptotes far below 0. Note
+#' that after the model is refit with this bound, the height of the 0-dose
+#' asymptote may decrease slightly, so the infinite-dose asymptote may still end
+#' up slightly below 0.
 #'
 #' If the height of the model is positive (if activity increases at higher
-#' dose), the height is bounded at 100 minus the height of the unbounded
-#' 0-concentration asymptote to avoid producing models with
-#' infinite-concentration asymptotes far above 100. This is only valid for
-#' activity units like percent inhibition that should not realistically exceed
-#' 100. Note that after the model is refit with this bound, the height of the
-#' 0-concentration asymptote may increase slightly, so the maximum-concentration
-#' asymptote may still end up slightly above 100.
+#' dose), the height is bounded at 100 minus the height of the unbounded 0-dose
+#' asymptote to avoid producing models with infinite-dose asymptotes far above
+#' 100. This is only valid for activity units like percent inhibition that
+#' should not realistically exceed 100. Note that after the model is refit with
+#' this bound, the height of the 0-dose asymptote may increase slightly, so the
+#' maximum-dose asymptote may still end up slightly above 100.
 #'
 #' @inherit get_drda_helper params return
 #' @export
@@ -54,7 +53,7 @@ get_drda_helper <- function(data, activity_col="activity", ...){
 get_drda <- function(data, activity_col="activity"){
   # first get coefficients of a model with no bounds on parameters
   unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
-  unbounded_alpha <- unbounded_coeffs["alpha"] # 0 conc asymptote
+  unbounded_alpha <- unbounded_coeffs["alpha"] # 0 dose asymptote
   unbounded_delta <- unbounded_coeffs["delta"] # height of curve
   # bound curve height depending on whether the model increases or decreases
   if(unbounded_delta < 0){
@@ -80,8 +79,8 @@ get_drda <- function(data, activity_col="activity"){
 #' @param alpha Optional: fixed value of asymptote level at 0 dose. See
 #'   [drda::drda()].
 #' @param delta Optional: fixed value of height of the curve (difference betwene
-#'   minimum and maximum concentration asymptotes). Signed (can be positive or
-#'   negative). See [drda::drda()].
+#'   minimum and maximum dose asymptotes). Signed (can be positive or negative).
+#'   See [drda::drda()].
 #' @param eta Optional: fixed value of growth rate or Hill slope. Not signed
 #'   (always positive). See [drda::drda()].
 #' @param phi Optional: fixed value of mid-value or EC50. See [drda::drda()].

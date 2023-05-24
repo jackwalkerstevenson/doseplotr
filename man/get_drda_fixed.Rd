@@ -19,15 +19,15 @@ on one target. If needed, filter data in advance with \code{\link[=filter_trt_tg
 The dataframe should contain the following columns:
 \itemize{
 \item "activity" (default) or other activity column name (see \code{activity_col})
-\item conc_logM: concentration of treatment in log(molar) units
+\item log_dose: dose of treatment in log10 units
 }}
 
 \item{alpha}{Optional: fixed value of asymptote level at 0 dose. See
 \code{\link[drda:drda]{drda::drda()}}.}
 
 \item{delta}{Optional: fixed value of height of the curve (difference betwene
-minimum and maximum concentration asymptotes). Signed (can be positive or
-negative). See \code{\link[drda:drda]{drda::drda()}}.}
+minimum and maximum dose asymptotes). Signed (can be positive or negative).
+See \code{\link[drda:drda]{drda::drda()}}.}
 
 \item{eta}{Optional: fixed value of growth rate or Hill slope. Not signed
 (always positive). See \code{\link[drda:drda]{drda::drda()}}.}

@@ -12,7 +12,7 @@ on one target. If needed, filter data in advance with \code{\link[=filter_trt_tg
 The dataframe should contain the following columns:
 \itemize{
 \item "activity" (default) or other activity column name (see \code{activity_col})
-\item conc_logM: concentration of treatment in log(molar) units
+\item log_dose: dose of treatment in log10 units
 }}
 
 \item{activity_col}{Name of the column containing activity of treatment.
@@ -30,18 +30,17 @@ fits.
 }
 \details{
 If the height of the model is negative (if activity decreases at higher
-dose), the height is bounded at the height of the unbounded 0-concentration
-asymptote to avoid producing models with infinite-concentration asymptotes
-far below 0. Note that after the model is refit with this bound, the height
-of the 0-concentration asymptote may decrease slightly, so the
-maximum-concentration asymptote may still end up slightly below 0.
+dose), the height is bounded at the height of the unbounded 0-dose asymptote
+to avoid producing models with infinite-dose asymptotes far below 0. Note
+that after the model is refit with this bound, the height of the 0-dose
+asymptote may decrease slightly, so the infinite-dose asymptote may still end
+up slightly below 0.
 
 If the height of the model is positive (if activity increases at higher
-dose), the height is bounded at 100 minus the height of the unbounded
-0-concentration asymptote to avoid producing models with
-infinite-concentration asymptotes far above 100. This is only valid for
-activity units like percent inhibition that should not realistically exceed
-100. Note that after the model is refit with this bound, the height of the
-0-concentration asymptote may increase slightly, so the maximum-concentration
-asymptote may still end up slightly above 100.
+dose), the height is bounded at 100 minus the height of the unbounded 0-dose
+asymptote to avoid producing models with infinite-dose asymptotes far above
+100. This is only valid for activity units like percent inhibition that
+should not realistically exceed 100. Note that after the model is refit with
+this bound, the height of the 0-dose asymptote may increase slightly, so the
+maximum-dose asymptote may still end up slightly above 100.
 }
