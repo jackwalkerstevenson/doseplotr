@@ -12,7 +12,7 @@ combinations of treatments and targets. The dataframe should contain the
 following columns:
 \itemize{
 \item "activity" (default) or other activity column name (see \code{activity_col})
-\item conc_logM: concentration of treatment in log(molar) units
+\item log_dose: dose of treatment in log(molar) units
 }}
 
 \item{activity_col}{Name of the column containing activity of treatment.

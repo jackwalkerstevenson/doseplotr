@@ -5,7 +5,7 @@
 #'   following columns:
 #'
 #' * "activity" (default) or other activity column name (see `activity_col`)
-#' * conc_logM: concentration of treatment in log(molar) units
+#' * log_dose: dose of treatment in log(molar) units
 #' @inheritParams get_drda
 #' @return A summary dataframe containing one row for each combination of
 #'   treatment and target in `data` and containing the following columns:
