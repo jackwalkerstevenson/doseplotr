@@ -65,9 +65,9 @@ EC50_logM_from_point_model <- function(model, log_dose, activity){
 #' Estimate nM EC50 from one dose-response point and 3 parameters of a model
 #'
 #' @inherit EC50_logM_from_point_model params return
-#' @param conc_nM The dose of the single point measurement in nanomolar units
+#' @param dose_nM The dose of the single point measurement in nanomolar units
 #' @export
-EC50_nM_from_point_model <- function(model, conc_nM, activity){
-  EC50_logM_from_point_model(model, nM_to_logM(conc_nM), activity) |>
+EC50_nM_from_point_model <- function(model, dose_nM, activity){
+  EC50_logM_from_point_model(model, nM_to_logM(dose_nM), activity) |>
     logM_to_nM()
 }
