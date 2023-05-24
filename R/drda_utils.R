@@ -10,14 +10,14 @@ get_hill_slope <- function(model){
   stats::coefficients(model)["eta"]
 }
 
-#' Get effective logmolar concentration for a response level from a drda model
+#' Get effective log10 dose for a response level from a drda model
 #'
 #' @inheritParams get_hill_slope
 #' @param level The desired response level in percent. Percent of the way from
 #'   the minimum-dose response to the maximum-dose response, regardless of
 #'   whether the response is positive or negative. Default is 50, giving the
 #'   classic EC50.
-#' @return The effective concentration in log10(molar) units.
+#' @return The effective dose in log10 units.
 #' @export
 get_EC_logM <- function(model, level=50){
   assertthat::assert_that(0<level && level<100,
@@ -26,10 +26,10 @@ get_EC_logM <- function(model, level=50){
   drda::effective_dose(model, level/100)[1]
 }
 
-#' Get effective nanomolar concentration for a response level from a drda model
+#' Get effective nanomolar dose for a response level from a drda model
 #'
 #' @inheritParams get_EC_logM
-#' @return The effective concentration in nanomolar units.
+#' @return The effective dose in nanomolar units.
 #' @export
 get_EC_nM <- function(model, level=50){
   get_EC_logM(model, level) |> logM_to_nM()
@@ -42,8 +42,8 @@ get_EC_nM <- function(model, level=50){
 #' @param eta The eta parameter from a `drda` model.
 #' @param log_dose The dose of the single point measurement in log units
 #' @param activity The activity (NOT percent inhibition) observed at the tested
-#'   concentration
-#' @return The estimated EC50 in log10(molar) units
+#'   dose
+#' @return The estimated EC50 in log10 units
 #' @export
 EC50_logM_from_point_params <- function(alpha, delta, eta, log_dose, activity){
   # 4-parameter logistic equation solved for phi
