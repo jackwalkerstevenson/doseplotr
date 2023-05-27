@@ -96,5 +96,8 @@ preprocess_plate_data <- function(df){
   )
   df |>
     dplyr::rename(dplyr::any_of(renames)) |>
-    make_log_dose() |> normalize_dose_response()
+    dplyr::filter(.data[["treatment"]] != "N/A") |>  # drop empty wells
+    make_log_dose() |>
+    normalize_dose_response() |>
+    dplyr::filter(.data[["log_dose"]] != -Inf) # drop 0-dose values after normalizing)
 }
