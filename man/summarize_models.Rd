@@ -4,7 +4,7 @@
 \alias{summarize_models}
 \title{Summarize model parameters for all combinations of treatments and targets}
 \usage{
-summarize_models(data, activity_col = "activity")
+summarize_models(data, activity_col = "response_norm")
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for one or more
