@@ -16,7 +16,7 @@
 #' * hill_slope: the `eta` parameter from [drda::drda()]. The rate of growth of
 #'   the model, unsigned (always positive).
 #' @export
-summarize_models <- function(data, activity_col="activity"){
+summarize_models <- function(data, activity_col="response_norm"){
   data |> dplyr::group_by(.data$treatment, .data$target) |>
   dplyr::summarize(
     # kind of silly to be fitting the whole model 3x. fine for now
