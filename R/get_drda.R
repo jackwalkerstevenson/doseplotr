@@ -52,20 +52,28 @@ get_drda_helper <- function(data, activity_col="activity", ...){
 #'
 get_drda <- function(data, activity_col="activity"){
   # first get coefficients of a model with no bounds on parameters
-  unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
-  unbounded_alpha <- unbounded_coeffs["alpha"] # 0 dose asymptote
-  unbounded_delta <- unbounded_coeffs["delta"] # height of curve
-  # bound curve height depending on whether the model increases or decreases
-  if(unbounded_delta < 0){
-    # bound delta above -alpha so curves can't go way below 0
-    return(get_drda_helper(data, activity_col,
-                           lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf)))
-  }
-  else{
-    # bound delta below 100-alpha so curves can't go way above 100
-    return(get_drda_helper(data, activity_col,
-                           upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
-  }
+  tryCatch({
+    unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
+    unbounded_alpha <- unbounded_coeffs["alpha"] # 0 dose asymptote
+    unbounded_delta <- unbounded_coeffs["delta"] # height of curve
+    # bound curve height depending on whether the model increases or decreases
+    if(unbounded_delta < 0){
+      # bound delta above -alpha so curves can't go way below 0
+      return(get_drda_helper(data, activity_col,
+                             lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf)))
+    }
+    else{
+      # bound delta below 100-alpha so curves can't go way above 100
+      return(get_drda_helper(data, activity_col,
+                             upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
+    }
+  },
+  warning = function(w){
+    if(grepl("issues while computing", w$message)){
+      rlang::warn("trouble fitting one or more models")
+      return(get_drda_helper(data, activity_col))
+    }
+  })
 }
 
 #' Fit a drda 4-parameter logistic model with one or more parameters fixed
