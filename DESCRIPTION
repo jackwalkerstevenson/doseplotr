@@ -24,6 +24,7 @@ Imports:
     dplyr,
     drc,
     drda,
+    forcats,
     glue,
     plater,
     purrr,
