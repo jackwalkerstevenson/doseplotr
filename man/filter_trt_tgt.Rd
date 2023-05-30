@@ -2,9 +2,15 @@
 % Please edit documentation in R/filter.R
 \name{filter_trt_tgt}
 \alias{filter_trt_tgt}
-\title{Filter data to include only a given treatment and target}
+\title{Filter data to include only given treatments and targets}
 \usage{
-filter_trt_tgt(data, trt, tgt, trt_col = "treatment", tgt_col = "target")
+filter_trt_tgt(
+  data,
+  trt = NA,
+  tgt = NA,
+  trt_col = "treatment",
+  tgt_col = "target"
+)
 }
 \arguments{
 \item{data}{A dataframe containing the following columns:
@@ -13,9 +19,9 @@ filter_trt_tgt(data, trt, tgt, trt_col = "treatment", tgt_col = "target")
 \item "target" (default) or other target column name (see \code{tgt_col})
 }}
 
-\item{trt}{Name of the treatment to use in the model}
+\item{trt}{Name of treatments to use in the model. String or character vector.}
 
-\item{tgt}{Name of the target to use in the model}
+\item{tgt}{Name of targets to use in the model. String or character vector.}
 
 \item{trt_col}{Name of the column containing treatments. Default is
 "treatment". Typical alternatives might include e.g. "drug", "additive",
@@ -25,11 +31,11 @@ filter_trt_tgt(data, trt, tgt, trt_col = "treatment", tgt_col = "target")
 Typical alternatives might include e.g. "mutant", "cell_line", "species".}
 }
 \value{
-A dataframe containing only rows filtered for the desired treatment
-and target.
+A dataframe containing only rows filtered for the desired treatments
+and targets.
 }
 \description{
-Filter data to include only a given treatment and target
+Filter data to include only given treatments and targets
 }
 \examples{
 df <- data.frame(treatment = c("foo", "foo", "foo", "bar", "baz"),

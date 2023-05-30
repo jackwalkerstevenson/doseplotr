@@ -21,9 +21,9 @@ get_EC_logM_drm(
 \item "target" (default) or other target column name (see \code{tgt_col})
 }}
 
-\item{trt}{Name of the treatment to use in the model}
+\item{trt}{Name of treatments to use in the model. String or character vector.}
 
-\item{tgt}{Name of the target to use in the model}
+\item{tgt}{Name of targets to use in the model. String or character vector.}
 
 \item{response_level}{The response level in percent for which to estimate the
 effective concentration. This parameter is used as the \code{respLev} parameter
