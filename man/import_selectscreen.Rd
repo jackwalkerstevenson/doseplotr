@@ -11,8 +11,8 @@ import_selectscreen(input_filename)
 the type of file that Thermo SelectScreen offers as a csv download as of
 2023, with the column names unedited. It expects the following columns:
 \itemize{
-\item Compound.Name
-\item Kinase
+\item Compound.Name (or "treatment")
+\item Kinase (or "target")
 \item \% Inhibition 1
 \item \% Inhibition 2
 }}
@@ -31,6 +31,9 @@ dose-response analysis to simpler, more readable names:
 \item "Compound.Name" -> "treatment"
 \item "Kinase" -> "target"
 }
+
+If "treatment" or "target" columns are already present they will not be
+overwritten.
 
 The two untidy "\% Inhibition" columns are pivoted to one tidy
 "pct_inhibition" column, the "Compound.Conc" column (which SelectScreen

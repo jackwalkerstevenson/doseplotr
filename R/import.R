@@ -93,6 +93,9 @@ import_plates <- function(dir){
 #' * "Compound.Name" -> "treatment"
 #' * "Kinase" -> "target"
 #'
+#' If "treatment" or "target" columns are already present they will not be
+#' overwritten.
+#'
 #' The two untidy "% Inhibition" columns are pivoted to one tidy
 #' "pct_inhibition" column, the "Compound.Conc" column (which SelectScreen
 #' indicates is in nM units) is converted to log10(molar), and a "response"
@@ -101,8 +104,8 @@ import_plates <- function(dir){
 #'   the type of file that Thermo SelectScreen offers as a csv download as of
 #'   2023, with the column names unedited. It expects the following columns:
 #'
-#'   * Compound.Name
-#'   * Kinase
+#'   * Compound.Name (or "treatment")
+#'   * Kinase (or "target")
 #'   * % Inhibition 1
 #'   * % Inhibition 2
 #' @return The imported table as a tibble.
@@ -110,15 +113,20 @@ import_plates <- function(dir){
 #'
 import_selectscreen <- function(input_filename){
   raw_data <- readr::read_csv(input_filename, name_repair = "universal") |>
-    # rename relevant columns to common names
-    dplyr::rename(treatment = .data$Compound.Name) |>
-    dplyr::rename(target = .data$Kinase) |>
     # tidy by pivoting duplicates to one measurement per row
     tidyr::pivot_longer(cols = c(.data$..Inhibition.1, .data$..Inhibition.2),
                         names_to = NULL, values_to = "pct_inhibition") |>
     # convert conc to log10 molar and convert percent inhibition to activity
     dplyr::mutate(log_dose = nM_to_logM(.data$Compound.Conc)) |> # conc is nM
     dplyr::mutate(response = 100 - .data$pct_inhibition)
+  # rename relevant columns to common names
+  if(!("treatment" %in% colnames(raw_data))){
+    raw_data <- raw_data |> dplyr::rename(treatment = .data$Compound.Name)
+  }
+  if(!("target" %in% colnames(raw_data))){
+    raw_data <- raw_data |> dplyr::rename(target = .data$Kinase)
+  }
+  print(colnames(raw_data))
   # factor levels in order of appearance in data
   tgt_factors <- unique(raw_data[["target"]])
   trt_factors <- unique(raw_data[["treatment"]])
