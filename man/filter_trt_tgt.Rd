@@ -6,8 +6,8 @@
 \usage{
 filter_trt_tgt(
   data,
-  trt = NA,
-  tgt = NA,
+  trt = NULL,
+  tgt = NULL,
   trt_col = "treatment",
   tgt_col = "target"
 )

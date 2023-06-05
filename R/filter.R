@@ -18,7 +18,7 @@
 #' df <- data.frame(treatment = c("foo", "foo", "foo", "bar", "baz"),
 #'                  target = c("apple", "orange", "banana", "apple", "orange"))
 #' filter_trt_tgt(df, "foo", "orange")
-filter_trt_tgt <- function(data, trt = NA, tgt = NA,
+filter_trt_tgt <- function(data, trt = NULL, tgt = NULL,
                            trt_col="treatment",
                            tgt_col="target"){
   assertthat::assert_that(assertthat::has_name(data, trt_col),
@@ -26,11 +26,12 @@ filter_trt_tgt <- function(data, trt = NA, tgt = NA,
   assertthat::assert_that(assertthat::has_name(data, tgt_col),
                           msg = glue::glue("column {tgt_col} not found"))
   # unclear why you have to wrap embrace in get() but apparently you do
-  if(!is.na(trt)){
+  if(!is.null(trt)){
     data <- data |> dplyr::filter(get({{ trt_col }}) %in% trt)
   }
-  if(!is.na(tgt)){
+  if(!is.null(tgt)){
     data <- data |> dplyr::filter(get({{ tgt_col }}) %in% tgt)
   }
+  if(nrow(data) == 0){warning("no data left after filtering")}
   return(data)
 }
