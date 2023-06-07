@@ -15,9 +15,9 @@ get_IC_nM(model, level = 50)
 The effective dose in nanomolar units.
 }
 \description{
-This function returns the concentration for which a dose-response model
-gives an exact desired response level. For instance, the IC50 is the dose
-that gives a response level of exactly 50. This is not to be confused with
-the EC50, which is the dose that gives 50\% of the maximum response and is
-given by \code{get_EC_nM()}.
+This function returns the dose for which a dose-response model gives an exact
+desired response level. For instance, the IC50 is the dose that gives a
+response level of exactly 50. This is not to be confused with the EC50, which
+is the dose that gives 50\% of the maximum response and is given by
+\code{get_EC_nM()}.
 }

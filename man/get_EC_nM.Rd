@@ -19,9 +19,9 @@ EC50.}
 The effective dose in nanomolar units.
 }
 \description{
-This function returns the concentration for which a dose-response model gives
-a desired fraction of the maximum response. For instance, the EC50 is the
-dose that gives 50\% of the maximum response, regardless of the direction or
+This function returns the dose for which a dose-response model gives a
+desired fraction of the maximum response. For instance, the EC50 is the dose
+that gives 50\% of the maximum response, regardless of the direction or
 magnitude of the response. This is not to be confused with the IC50, which is
 the dose that gives a response of exactly 50 and is given by \code{get_IC_nM()}.
 }
