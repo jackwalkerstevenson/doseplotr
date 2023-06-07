@@ -10,14 +10,35 @@ get_hill_slope <- function(model){
   stats::coefficients(model)["eta"]
 }
 
-#' Get effective log10 dose for a response level from a drda model
+#' Get effective log10 dose for an exact response level from a drda model
 #'
+#' This function returns the concentration for which a dose-response model
+#' gives an exact desired response level. For instance, the IC50 is the dose
+#' that gives a response level of exactly 50. This is not to be confused with
+#' the EC50, which is the dose that gives 50% of the maximum response and is
+#' given by `get_EC_logM()`.
 #' @inheritParams get_hill_slope
-#' @param level The desired response level in percent. Percent of the way from
-#'   the minimum-dose response to the maximum-dose response, regardless of
-#'   whether the response is positive or negative. Default is 50, giving the
-#'   classic EC50.
+#' @param level The desired exact response level.
 #' @return The effective dose in log10 units.
+#' @export
+get_IC_logM <- function(model, level = 50){
+  return(NA)
+}
+
+#' Get effective log10 dose for a percent of maximum response from a drda model
+#'
+#' This function returns the concentration for which a dose-response model
+#' gives a desired fraction of the maximum response. For instance, the EC50 is
+#' the dose that gives 50% of the maximum response, regardless of the direction
+#' or magnitude of the response. This is not to be confused with the IC50, which
+#' is the dose that gives a response of exactly 50 and is given by
+#' `get_IC_logM()`.
+#' @inheritParams get_hill_slope
+#' @inherit get_IC_logM return
+#' @param level The desired response in percent. Percent of the way from the
+#'   minimum-dose response to the maximum-dose response, regardless of whether
+#'   the response is positive or negative. Default is 50, giving the classic
+#'   EC50.
 #' @export
 get_EC_logM <- function(model, level=50){
   assertthat::assert_that(0<level && level<100,
@@ -26,10 +47,31 @@ get_EC_logM <- function(model, level=50){
   drda::effective_dose(model, level/100)[1]
 }
 
-#' Get effective nanomolar dose for a response level from a drda model
+
+#' Get effective nanomolar dose for an exact response level from a drda model
 #'
-#' @inheritParams get_EC_logM
+#' This function returns the concentration for which a dose-response model
+#' gives an exact desired response level. For instance, the IC50 is the dose
+#' that gives a response level of exactly 50. This is not to be confused with
+#' the EC50, which is the dose that gives 50% of the maximum response and is
+#' given by `get_EC_nM()`.
+#' @inheritParams get_IC_logM
 #' @return The effective dose in nanomolar units.
+#' @export
+get_IC_nM <- function(model, level=50){
+  get_IC_logM(model, level) |> logM_to_nM()
+}
+
+#' Get effective nanomolar dose for a percent of maximum response from a drda
+#' model
+#'
+#' This function returns the concentration for which a dose-response model gives
+#' a desired fraction of the maximum response. For instance, the EC50 is the
+#' dose that gives 50% of the maximum response, regardless of the direction or
+#' magnitude of the response. This is not to be confused with the IC50, which is
+#' the dose that gives a response of exactly 50 and is given by `get_IC_nM()`.
+#' @inheritParams get_EC_logM
+#' @inherit get_IC_nM return
 #' @export
 get_EC_nM <- function(model, level=50){
   get_EC_logM(model, level) |> logM_to_nM()

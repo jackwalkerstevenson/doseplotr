@@ -2,21 +2,26 @@
 % Please edit documentation in R/drda_utils.R
 \name{get_EC_nM}
 \alias{get_EC_nM}
-\title{Get effective nanomolar dose for a response level from a drda model}
+\title{Get effective nanomolar dose for a percent of maximum response from a drda
+model}
 \usage{
 get_EC_nM(model, level = 50)
 }
 \arguments{
 \item{model}{A logistic model of the type returned by \code{\link[drda:drda]{drda::drda()}}}
 
-\item{level}{The desired response level in percent. Percent of the way from
-the minimum-dose response to the maximum-dose response, regardless of
-whether the response is positive or negative. Default is 50, giving the
-classic EC50.}
+\item{level}{The desired response in percent. Percent of the way from the
+minimum-dose response to the maximum-dose response, regardless of whether
+the response is positive or negative. Default is 50, giving the classic
+EC50.}
 }
 \value{
 The effective dose in nanomolar units.
 }
 \description{
-Get effective nanomolar dose for a response level from a drda model
+This function returns the concentration for which a dose-response model gives
+a desired fraction of the maximum response. For instance, the EC50 is the
+dose that gives 50\% of the maximum response, regardless of the direction or
+magnitude of the response. This is not to be confused with the IC50, which is
+the dose that gives a response of exactly 50 and is given by \code{get_IC_nM()}.
 }
