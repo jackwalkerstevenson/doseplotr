@@ -11,7 +11,7 @@ summarize_models(data, activity_col = "response_norm")
 combinations of treatments and targets. The dataframe should contain the
 following columns:
 \itemize{
-\item "activity" (default) or other activity column name (see \code{activity_col})
+\item "response_norm" (default) or other activity column name from \code{activity_col}
 \item log_dose: dose of treatment in log(molar) units
 }}
 

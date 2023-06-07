@@ -4,7 +4,7 @@
 #'   combinations of treatments and targets. The dataframe should contain the
 #'   following columns:
 #'
-#' * "activity" (default) or other activity column name (see `activity_col`)
+#' * "response_norm" (default) or other activity column name from `activity_col`
 #' * log_dose: dose of treatment in log(molar) units
 #' @inheritParams get_drda
 #' @return A summary dataframe containing one row for each combination of

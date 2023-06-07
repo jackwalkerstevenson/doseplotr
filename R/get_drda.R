@@ -50,7 +50,7 @@ get_drda_helper <- function(data, activity_col="activity", ...){
 #' @inherit get_drda_helper params return
 #' @export
 #'
-get_drda <- function(data, activity_col="activity"){
+get_drda <- function(data, activity_col="response"){
   # first get coefficients of a model with no bounds on parameters
   tryCatch({
     unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
