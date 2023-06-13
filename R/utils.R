@@ -25,6 +25,20 @@ longest <- function(strings){
   lengths[[which.max(lengths)]]
 }
 
+#' Get a string representation of current system time
+#'
+#' @return A string representing current system time in YYYY-MM-DDTHHMMSS
+#'   format, which is a filesystem-friendly adaptation of ISO 8601 without
+#'   colons. For example, 8:17 pm and 40 seconds on July 20, 1969 is represented
+#'   as 1969-06-20T201740.
+#' @export
+#'
+#' @examples
+#' get_timestamp()
+get_timestamp <- function(){
+  format(Sys.time(), "%Y-%m-%dT%H%M%S")
+}
+
 #' Replace NA values in a vector with Inf or -Inf
 #'
 #' This method is intended to prepare vectors for use by [get_drda_fixed()] as
