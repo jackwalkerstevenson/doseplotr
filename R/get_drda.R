@@ -73,6 +73,11 @@ get_drda <- function(data, activity_col="response"){
       rlang::warn("trouble fitting one or more models")
       return(get_drda_helper(data, activity_col))
     }
+  },
+  error = function(e){
+    if(grepl("system is computationally singular", e$message)){
+      stop("unable to fit drda model")
+    }
   })
 }
 
