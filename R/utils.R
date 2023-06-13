@@ -25,9 +25,9 @@ longest <- function(strings){
   lengths[[which.max(lengths)]]
 }
 
-#' Get a string representation of current system time
+#' Get a string representation of current local system time
 #'
-#' @return A string representing current system time in YYYY-MM-DDTHHMMSS
+#' @return A string representing current local system time in YYYY-MM-DDTHHMMSS
 #'   format, which is a filesystem-friendly adaptation of ISO 8601 without
 #'   colons. For example, 8:17 pm and 40 seconds on July 20, 1969 is represented
 #'   as 1969-06-20T201740.
