@@ -25,12 +25,12 @@ get_drda_helper <- function(data, activity_col="response_norm", ...){
   return(drda::drda(get({{ activity_col }})~log_dose, data = data, ...))
 }
 
-#' Get a drda dose-response model for the activity of a treatment on a target
+#' Get a dose-response model from data with flexible bounds on parameters
 #'
 #' `get_drda()` runs [get_drda_helper()] to generate a 4-parameter logistic
 #' dose-response model for the effect of a given treatment on a target. It
 #' attempts to bound the parameters of the model to avoid physically unrealistic
-#' fits.
+#' fits but allows some variation in 0-dose asymptote value.
 #'
 #' If the height of the model is negative (if activity decreases at higher
 #' dose), the zero-dose asymptote is bounded in (80, 120), and the height is
@@ -67,8 +67,7 @@ get_drda <- function(data, activity_col="response_norm"){
       # then fit another, delta bounded to -alpha so curve can't go below 0
       return(get_drda_helper(data, activity_col,
                              lower_bound = c(80, -dec_alpha, -Inf, -Inf),
-                             upper_bound = c(120, Inf, Inf, Inf)))
-    }
+                             upper_bound = c(120, Inf, Inf, Inf)))}
     else{
       # increasing curve: fit a model with alpha bounded in (-20, 20)
       inc_coeffs <- stats::coefficients(
@@ -79,7 +78,67 @@ get_drda <- function(data, activity_col="response_norm"){
       # then fit another, delta bounded to 100-alpha so curve can't go above 100
       return(get_drda_helper(data, activity_col,
                              lower_bound = c(-20, -Inf, -Inf, -Inf),
-                             upper_bound = c(20, 100-inc_alpha, Inf, Inf)))
+                             upper_bound = c(20, 100-inc_alpha, Inf, Inf)))}
+  },
+  warning = function(w){
+    if(grepl("issues while computing", w$message)){
+      rlang::warn("trouble fitting one or more models")
+      return(get_drda_helper(data, activity_col))
+    }
+  },
+  error = function(e){
+    if(grepl("system is computationally singular", e$message)){
+      stop("Unable to fit model. Data may be noisy or out of parameter bounds")
+    }
+  })
+}
+
+#' Get a dose-response model from data with rigid bounds on parameters
+#'
+#' `get_drda_rigid()` runs [get_drda_helper()] to generate a 4-parameter
+#' logistic dose-response model for the effect of a given treatment on a target.
+#' It attempts to bound the parameters of the model to avoid physically
+#' unrealistic fits and fixes the 0-dose asymptote at 0 or 100 depending on
+#' whether the model is increasing or decreasing.
+#'
+#' If the height of the model is negative (if activity decreases at higher
+#' dose), the zero-dose asymptote is fixed at 100, and the height is
+#' bounded at the negative height of the zero-dose asymptote to avoid producing
+#' models with infinite-dose asymptotes far below 0. Note that after the model
+#' is refit with this bound, the height of the zero-dose asymptote may decrease
+#' slightly, so the infinite-dose asymptote may still end up slightly below 0.
+#'
+#' If the height of the model is positive (if activity increases at higher
+#' dose), the zero-dose asymptote is fixed at 0, and the height is
+#' bounded at 100 minus the height of the 0-dose asymptote to avoid producing
+#' models with infinite-dose asymptotes far above 100. This is only valid for
+#' activity units like percent inhibition that should not realistically exceed
+#' 100. Note that after the model is refit with this bound, the height of the
+#' 0-dose asymptote may increase slightly, so the maximum-dose asymptote may
+#' still end up slightly above 100.
+#'
+#' @inherit get_drda_helper params return
+#' @export
+#'
+get_drda_rigid <- function(data, activity_col="response_norm"){
+  # first get coefficients of a model with no bounds on parameters
+  tryCatch({
+    unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
+    unbounded_delta <- unbounded_coeffs["delta"] # height of curve
+    # bound curve height depending on whether the model increases or decreases
+    if(unbounded_delta < 0){
+      # decreasing curve: fit model with alpha=100 and delta bounded at -100
+      return(get_drda_helper(data, activity_col,
+                             lower_bound = param_bounds(c(100, -100, NA, NA),
+                                                        lower = TRUE),
+                             upper_bound = param_bounds(c(100, NA, NA, NA))))}
+    else{
+      # increasing curve: fit model with alpha = 0 and delta bounded at 100
+      return(get_drda_helper(data, activity_col,
+                             lower_bound = param_bounds(c(0, NA, NA, NA),
+                                                        lower = TRUE),
+                             # slight range for alpha or drda makes unplottable
+                             upper_bound = param_bounds(c(0.01, 100, NA, NA))))
     }
   },
   warning = function(w){
