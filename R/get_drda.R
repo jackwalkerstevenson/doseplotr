@@ -18,7 +18,7 @@
 #' @param ... Additional arguments to be passed to [drda::drda()], e.g. bounds.
 #' @return A dose-response model object of class `drda`.
 #'
-get_drda_helper <- function(data, activity_col="activity", ...){
+get_drda_helper <- function(data, activity_col="response_norm", ...){
   assertthat::assert_that(assertthat::has_name(data, activity_col),
                           msg = glue::glue("column {activity_col} not found"))
   # 4-param logistic model on pre-log-transformed data
@@ -33,39 +33,53 @@ get_drda_helper <- function(data, activity_col="activity", ...){
 #' fits.
 #'
 #' If the height of the model is negative (if activity decreases at higher
-#' dose), the height is bounded at the height of the unbounded 0-dose asymptote
-#' to avoid producing models with infinite-dose asymptotes far below 0. Note
-#' that after the model is refit with this bound, the height of the 0-dose
-#' asymptote may decrease slightly, so the infinite-dose asymptote may still end
-#' up slightly below 0.
+#' dose), the zero-dose asymptote is bounded in (80, 120), and the height is
+#' bounded at the negative height of the zero-dose asymptote to avoid producing
+#' models with infinite-dose asymptotes far below 0. Note that after the model
+#' is refit with this bound, the height of the zero-dose asymptote may decrease
+#' slightly, so the infinite-dose asymptote may still end up slightly below 0.
 #'
 #' If the height of the model is positive (if activity increases at higher
-#' dose), the height is bounded at 100 minus the height of the unbounded 0-dose
-#' asymptote to avoid producing models with infinite-dose asymptotes far above
-#' 100. This is only valid for activity units like percent inhibition that
-#' should not realistically exceed 100. Note that after the model is refit with
-#' this bound, the height of the 0-dose asymptote may increase slightly, so the
-#' maximum-dose asymptote may still end up slightly above 100.
+#' dose), the zero-dose asymptote is bounded in (-20, 20), and the height is
+#' bounded at 100 minus the height of the 0-dose asymptote to avoid producing
+#' models with infinite-dose asymptotes far above 100. This is only valid for
+#' activity units like percent inhibition that should not realistically exceed
+#' 100. Note that after the model is refit with this bound, the height of the
+#' 0-dose asymptote may increase slightly, so the maximum-dose asymptote may
+#' still end up slightly above 100.
 #'
 #' @inherit get_drda_helper params return
 #' @export
 #'
-get_drda <- function(data, activity_col="response"){
+get_drda <- function(data, activity_col="response_norm"){
   # first get coefficients of a model with no bounds on parameters
   tryCatch({
     unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
-    unbounded_alpha <- unbounded_coeffs["alpha"] # 0 dose asymptote
     unbounded_delta <- unbounded_coeffs["delta"] # height of curve
     # bound curve height depending on whether the model increases or decreases
     if(unbounded_delta < 0){
-      # bound delta above -alpha so curves can't go way below 0
+      # decreasing curve: fit a model with alpha bounded in (80, 120)
+      dec_coeffs <- stats::coefficients(
+        get_drda_helper(data, activity_col,
+                        lower_bound = c(80, -Inf, -Inf, -Inf),
+                        upper_bound = c(120, Inf, Inf, Inf)))
+      dec_alpha <- dec_coeffs["alpha"]
+      # then fit another, delta bounded to -alpha so curve can't go below 0
       return(get_drda_helper(data, activity_col,
-                             lower_bound = c(-Inf, -unbounded_alpha, -Inf, -Inf)))
+                             lower_bound = c(80, -dec_alpha, -Inf, -Inf),
+                             upper_bound = c(120, Inf, Inf, Inf)))
     }
     else{
-      # bound delta below 100-alpha so curves can't go way above 100
+      # increasing curve: fit a model with alpha bounded in (-20, 20)
+      inc_coeffs <- stats::coefficients(
+        get_drda_helper(data, activity_col,
+                        lower_bound = c(-20, -Inf, -Inf, -Inf),
+                        upper_bound = c(20, Inf, Inf, Inf)))
+      inc_alpha <- inc_coeffs["alpha"]
+      # then fit another, delta bounded to 100-alpha so curve can't go above 100
       return(get_drda_helper(data, activity_col,
-                             upper_bound = c(Inf, 100-unbounded_alpha, Inf, Inf)))
+                             lower_bound = c(-20, -Inf, -Inf, -Inf),
+                             upper_bound = c(20, 100-inc_alpha, Inf, Inf)))
     }
   },
   warning = function(w){
@@ -76,7 +90,7 @@ get_drda <- function(data, activity_col="response"){
   },
   error = function(e){
     if(grepl("system is computationally singular", e$message)){
-      stop("unable to fit drda model")
+      stop("Unable to fit model. Data may be noisy or out of parameter bounds")
     }
   })
 }
@@ -99,7 +113,7 @@ get_drda <- function(data, activity_col="response"){
 #' @param phi Optional: fixed value of mid-value or EC50. See [drda::drda()].
 #'
 get_drda_fixed <- function(data, alpha=NA, delta=NA, eta=NA, phi=NA,
-                           activity_col="activity"){
+                           activity_col="response_norm"){
   params <- c(alpha, delta, eta, phi)
   # drda bounds require a non-infinite value. special case for no params:
   if(all(is.na(params))) return(get_drda_helper(data, activity_col))

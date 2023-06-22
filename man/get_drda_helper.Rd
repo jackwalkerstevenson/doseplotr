@@ -4,7 +4,7 @@
 \alias{get_drda_helper}
 \title{Get a drda dose-response model without bounds on parameters}
 \usage{
-get_drda_helper(data, activity_col = "activity", ...)
+get_drda_helper(data, activity_col = "response_norm", ...)
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for only one treatment

@@ -4,7 +4,7 @@
 \alias{get_drda}
 \title{Get a drda dose-response model for the activity of a treatment on a target}
 \usage{
-get_drda(data, activity_col = "response")
+get_drda(data, activity_col = "response_norm")
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for only one treatment
@@ -30,17 +30,18 @@ fits.
 }
 \details{
 If the height of the model is negative (if activity decreases at higher
-dose), the height is bounded at the height of the unbounded 0-dose asymptote
-to avoid producing models with infinite-dose asymptotes far below 0. Note
-that after the model is refit with this bound, the height of the 0-dose
-asymptote may decrease slightly, so the infinite-dose asymptote may still end
-up slightly below 0.
+dose), the zero-dose asymptote is bounded in (80, 120), and the height is
+bounded at the negative height of the zero-dose asymptote to avoid producing
+models with infinite-dose asymptotes far below 0. Note that after the model
+is refit with this bound, the height of the zero-dose asymptote may decrease
+slightly, so the infinite-dose asymptote may still end up slightly below 0.
 
 If the height of the model is positive (if activity increases at higher
-dose), the height is bounded at 100 minus the height of the unbounded 0-dose
-asymptote to avoid producing models with infinite-dose asymptotes far above
-100. This is only valid for activity units like percent inhibition that
-should not realistically exceed 100. Note that after the model is refit with
-this bound, the height of the 0-dose asymptote may increase slightly, so the
-maximum-dose asymptote may still end up slightly above 100.
+dose), the zero-dose asymptote is bounded in (-20, 20), and the height is
+bounded at 100 minus the height of the 0-dose asymptote to avoid producing
+models with infinite-dose asymptotes far above 100. This is only valid for
+activity units like percent inhibition that should not realistically exceed
+100. Note that after the model is refit with this bound, the height of the
+0-dose asymptote may increase slightly, so the maximum-dose asymptote may
+still end up slightly above 100.
 }
