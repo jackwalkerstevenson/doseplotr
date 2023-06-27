@@ -91,7 +91,7 @@ get_EC_nM <- function(model, level=50){
 #' @export
 EC50_log_from_point_params <- function(alpha, delta, eta, log_dose, activity){
   # 4-parameter logistic equation solved for phi
-  log(delta/(activity-alpha)-1)/eta + log_dose |> unname()
+  (log(delta/(activity-alpha)-1)/eta + log_dose) |> unname()
 }
 
 #' Estimate log10 EC50 from one dose-response point and 3 parameters of a model
