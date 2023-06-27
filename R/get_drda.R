@@ -20,7 +20,7 @@
 #'
 get_drda_helper <- function(data, activity_col="response_norm", ...){
   assertthat::assert_that(assertthat::has_name(data, activity_col),
-                          msg = glue::glue("column {activity_col} not found"))
+                          msg = glue::glue("column '{activity_col}' not found"))
   # 4-param logistic model on pre-log-transformed data
   return(drda::drda(get({{ activity_col }})~log_dose, data = data, ...))
 }
@@ -89,6 +89,9 @@ get_drda <- function(data, activity_col="response_norm"){
   error = function(e){
     if(grepl("system is computationally singular", e$message)){
       stop("Unable to fit model. Data may be noisy or out of parameter bounds")
+    }
+    if(grepl("column.*not found", e$message)){
+      stop(e$message)
     }
   })
 }
