@@ -18,7 +18,7 @@
 #' @param ... Additional arguments to be passed to [drda::drda()], e.g. bounds.
 #' @return A dose-response model object of class `drda`.
 #'
-get_drda_helper <- function(data, activity_col="response_norm", ...){
+get_drda_helper <- function(data, activity_col="response", ...){
   assertthat::assert_that(assertthat::has_name(data, activity_col),
                           msg = glue::glue("column '{activity_col}' not found"))
   # 4-param logistic model on pre-log-transformed data
@@ -51,7 +51,7 @@ get_drda_helper <- function(data, activity_col="response_norm", ...){
 #' @inherit get_drda_helper params return
 #' @export
 #'
-get_drda <- function(data, activity_col="response_norm"){
+get_drda <- function(data, activity_col="response"){
   # first get coefficients of a model with no bounds on parameters
   tryCatch({
     unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
@@ -123,7 +123,7 @@ get_drda <- function(data, activity_col="response_norm"){
 #' @inherit get_drda_helper params return
 #' @export
 #'
-get_drda_rigid <- function(data, activity_col="response_norm"){
+get_drda_rigid <- function(data, activity_col="response"){
   # first get coefficients of a model with no bounds on parameters
   tryCatch({
     unbounded_coeffs <- stats::coefficients(get_drda_helper(data, activity_col))
@@ -175,7 +175,7 @@ get_drda_rigid <- function(data, activity_col="response_norm"){
 #' @param phi Optional: fixed value of mid-value or EC50. See [drda::drda()].
 #'
 get_drda_fixed <- function(data, alpha=NA, delta=NA, eta=NA, phi=NA,
-                           activity_col="response_norm"){
+                           activity_col="response"){
   params <- c(alpha, delta, eta, phi)
   # drda bounds require a non-infinite value. special case for no params:
   if(all(is.na(params))) return(get_drda_helper(data, activity_col))
