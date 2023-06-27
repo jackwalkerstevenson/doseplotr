@@ -10,7 +10,7 @@ get_drda_fixed(
   delta = NA,
   eta = NA,
   phi = NA,
-  activity_col = "response_norm"
+  activity_col = "response"
 )
 }
 \arguments{

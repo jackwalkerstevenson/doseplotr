@@ -4,7 +4,7 @@
 \alias{get_drda}
 \title{Get a dose-response model from data with flexible bounds on parameters}
 \usage{
-get_drda(data, activity_col = "response_norm")
+get_drda(data, activity_col = "response")
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for only one treatment
