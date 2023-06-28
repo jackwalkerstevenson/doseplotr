@@ -20,6 +20,7 @@ nM_to_logM <- function(conc_nM){
 #'
 #' @param strings A vector of strings
 #' @return Length of the longest string in the vector
+#' @export
 longest <- function(strings){
   lengths <- purrr::map(strings, nchar)
   lengths[[which.max(lengths)]]
