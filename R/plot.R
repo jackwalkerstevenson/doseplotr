@@ -79,7 +79,7 @@ plot_treatment <- function(df, trt, response_col = "response", ...){
                         ggplot2::aes(x = log_dose,
                                      y = mean_read, # later take from argument
                                      color = target)) +
-      ggplot2::geom_point(ggplot2::aes(shape = target, size = 3)) +
+      ggplot2::geom_point(ggplot2::aes(shape = target), size = 3) +
       viridis::scale_color_viridis(option = color_scale,
                           discrete = TRUE,
                           begin = viridis_begin, end = viridis_end) +
