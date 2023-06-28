@@ -33,6 +33,7 @@ Imports:
     readr,
     readxl,
     rlang,
+    scales,
     stats,
     tidyr,
     viridis

@@ -6,7 +6,7 @@
 summarize_response <- function(df, response_col = "response"){
   dplyr::summarize(df,
                    # standard error for error bars = standard deviation / sqrt n
-                   sem = sd(.data[[response_col]],
+                   sem = stats::sd(.data[[response_col]],
                             na.rm = TRUE) / sqrt(dplyr::n()),
                    # get mean normalized readout value for plotting
                    mean_read = mean(.data[[response_col]]),
@@ -18,6 +18,8 @@ summarize_response <- function(df, response_col = "response"){
 #' @param plot ggplot2 plot to which to add objects
 #' @param x_limits Limits of the x axis. Vector of form c(start, end)
 #' @param font_base_size Font size in points. Default is 14 from theme_prism
+#' @param xlab The label for the x axis
+#' @param ylab The label for the y axis
 #' @param legend Whether or not the plot should have a legend (default is TRUE)
 #' @return The plot with added objects
 #' @importFrom ggprism guide_prism_offset_minor
@@ -39,14 +41,13 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                     ylim = c(0,NA)) + # set y axis zoom locally
     ggprism::theme_prism(base_size = font_base_size) + # make it look fancy like prism
     ggplot2::theme(plot.background = ggplot2::element_blank()) + # need for transparent background
-    {if(!legend) theme(legend.position = "none")} +
-    ggplot2::geom_errorbar(ggplot2::aes(ymax = mean_read+sem,
-                               ymin = mean_read-sem,
-                               width = w)) +
+    {if(!legend) ggplot2::theme(legend.position = "none")} +
+    ggplot2::geom_errorbar(ggplot2::aes(ymax = .data$mean_read + .data$sem,
+                               ymin = .data$mean_read - .data$sem,
+                               width = .data$w)) +
     # use drm method from drc package to plot dose response curve
     # todo: replace this with same drda method that fits EC50s
-    # ggplot2::geom_line(stat = "smooth", method = "drm", method.args = list(fct = L.4()),
-              # se = FALSE, linewidth = 1) +
+    ggplot2::geom_smooth(method = "drm", method.args = list(fct = drc::L.4()), se = FALSE, linewidth = 1) +
     ggplot2::labs(x = xlab, y = ylab)
 }
 
@@ -73,13 +74,13 @@ plot_treatment <- function(df, trt, response_col = "response", ...){
   viridis_end <- vr[2]
   summary <- df |>
     filter_trt_tgt(trt = trt) |>
-    dplyr::group_by(target, log_dose) |>
+    dplyr::group_by(.data$target, .data$log_dose) |>
     summarize_response(response_col = response_col)
   p <- {ggplot2::ggplot(summary,
-                        ggplot2::aes(x = log_dose,
-                                     y = mean_read, # later take from argument
-                                     color = target)) +
-      ggplot2::geom_point(ggplot2::aes(shape = target), size = 3) +
+                        ggplot2::aes(x = .data$log_dose,
+                                     y = .data$mean_read, # later take from argument
+                                     color = .data$target)) +
+      ggplot2::geom_point(ggplot2::aes(shape = .data$target), size = 3) +
       viridis::scale_color_viridis(option = color_scale,
                           discrete = TRUE,
                           begin = viridis_begin, end = viridis_end) +

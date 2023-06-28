@@ -20,6 +20,10 @@ base_dose_response(
 
 \item{font_base_size}{Font size in points. Default is 14 from theme_prism}
 
+\item{xlab}{The label for the x axis}
+
+\item{ylab}{The label for the y axis}
+
 \item{legend}{Whether or not the plot should have a legend (default is TRUE)}
 }
 \value{
