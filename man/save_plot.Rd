@@ -22,7 +22,7 @@ save_plot(
 
 \item{filename}{Path to the file to be saved}
 
-\item{legend}{Boolean: whether or not the plot has a legend}
+\item{legend}{Whether or not the plot should have a legend (default is TRUE)}
 
 \item{legend_len}{Length of the longest piece of text in the legend}
 
