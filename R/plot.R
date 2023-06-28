@@ -23,16 +23,16 @@ save_plot <- function(plot, filename,
                       legend = TRUE, legend_len = 0, font_base_size = 14,
                       nrow = 1, ncol = 1,
                       width = NULL, height = NULL, ...){
-  scale_facet <- 4
+  facet_size <- 4 # base measurement of both width and height before legend
   legend_pad <- 0.3 # extra width for legend icon
   text_factor <- font_base_size / 120 # approx width per character of longest legend text
   # if width is not provided, calculate width from length of legend text
   if(is.null(width)){
     if(legend){
-      width <- ncol * scale_facet + legend_pad + legend_len * text_factor}
-    else{width <- ncol * scale_facet}
+      width <- ncol * facet_size + legend_pad + legend_len * text_factor}
+    else{width <- ncol * facet_size}
   }
   if(is.null(height)){
-    height <- nrow * scale_facet
+    height <- nrow * facet_size
   }
   ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height, ...)}
