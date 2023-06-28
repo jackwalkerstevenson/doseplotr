@@ -26,6 +26,7 @@ Imports:
     drda,
     forcats,
     ggplot2,
+    ggprism,
     glue,
     plater,
     purrr,
@@ -33,7 +34,8 @@ Imports:
     readxl,
     rlang,
     stats,
-    tidyr
+    tidyr,
+    viridis
 Depends: 
     R (>= 2.10)
 LazyData: true

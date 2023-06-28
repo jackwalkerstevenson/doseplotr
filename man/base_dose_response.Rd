@@ -4,7 +4,14 @@
 \alias{base_dose_response}
 \title{Add ggplot objects common to all dose-response plots}
 \usage{
-base_dose_response(plot, x_limits, font_base_size = 14, legend = TRUE)
+base_dose_response(
+  plot,
+  x_limits,
+  font_base_size = 14,
+  xlab = "log10[compound] (M)",
+  ylab = "percent of untreated response",
+  legend = TRUE
+)
 }
 \arguments{
 \item{plot}{ggplot2 plot to which to add objects}

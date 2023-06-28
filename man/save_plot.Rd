@@ -8,7 +8,7 @@ save_plot(
   plot,
   filename,
   legend = TRUE,
-  legend_len = 0,
+  legend_len = NULL,
   font_base_size = 14,
   nrow = 1,
   ncol = 1,
