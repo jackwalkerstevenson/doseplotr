@@ -109,12 +109,11 @@ plot_treatment <- function(df, trt, response_col = "response", ...){
 #' @param ncol Number of columns of facets in the plot
 #' @param width Width of the image to be saved
 #' @param height Height of the image to be saved
-#' @param ... Other parameters to be passed to ggsave
 #' @export
 save_plot <- function(plot, filename,
                       legend = TRUE, legend_len = NULL, font_base_size = 14,
                       nrow = 1, ncol = 1,
-                      width = NULL, height = NULL, ...){
+                      width = NULL, height = NULL){
   facet_size <- 4 # base measurement of both width and height before legend
   legend_pad <- 0.3 # extra width for legend icon
   text_factor <- font_base_size / 120 # approx width per character of longest legend text
@@ -129,4 +128,4 @@ save_plot <- function(plot, filename,
   if(is.null(height)){
     height <- nrow * facet_size
   }
-  ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height, ...)}
+  ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height)}

@@ -13,8 +13,7 @@ save_plot(
   nrow = 1,
   ncol = 1,
   width = NULL,
-  height = NULL,
-  ...
+  height = NULL
 )
 }
 \arguments{
@@ -36,8 +35,6 @@ default}
 \item{width}{Width of the image to be saved}
 
 \item{height}{Height of the image to be saved}
-
-\item{...}{Other parameters to be passed to ggsave}
 }
 \description{
 \code{save_plot()} takes a ggplot2 object and saves it as an image.
