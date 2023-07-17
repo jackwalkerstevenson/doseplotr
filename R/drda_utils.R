@@ -7,6 +7,10 @@
 #' @export
 #'
 get_hill_slope <- function(model){
+  if(is.null(model)){
+    warning("get_hill_slope received a null model. Returning NA")
+    return(NA)
+  }
   stats::coefficients(model)["eta"]
 }
 
@@ -22,6 +26,10 @@ get_hill_slope <- function(model){
 #' @return The effective dose in log10 units.
 #' @export
 get_IC_log <- function(model, level = 50){
+  if(is.null(model)){
+    warning("get_IC_log received a null model. Returning NA")
+    return(NA)
+  }
   IC <- drda::effective_dose(model, level, type = "absolute")[1]
   if(is.na(IC)){warning("Unable to fit an IC50")}
   return(IC)
@@ -43,6 +51,10 @@ get_IC_log <- function(model, level = 50){
 #'   EC50.
 #' @export
 get_EC_log <- function(model, level=50){
+  if(is.null(model)){
+    warning("get_EC_log received a null model. Returning NA")
+    return(NA)
+  }
   assertthat::assert_that(0<level && level<100,
                           msg="level must be between 0 and 100")
   # effective_dose expects level from 0 to 1
