@@ -9,7 +9,7 @@ summarize_response <- function(df, response_col = "response"){
                    sem = stats::sd(.data[[response_col]],
                             na.rm = TRUE) / sqrt(dplyr::n()),
                    # get mean normalized readout value for plotting
-                   mean_read = mean(.data[[response_col]]),
+                   mean_response = mean(.data[[response_col]]),
                    w = 0.06 * dplyr::n() # for consistent error bar widths
   )}
 
