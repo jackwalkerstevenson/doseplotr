@@ -167,7 +167,9 @@ import_kinomescan <- function(input_filename){
   if(!("conc_nM" %in% colnames(raw_data))){
     raw_data <- raw_data |>
       dplyr::rename(dose_nM = .data$Compound.Concentration..nM.)}
-  raw_data |> dplyr::mutate(log_dose = nM_to_logM(.data$dose_nM)) # log dose
+  raw_data <- raw_data |>
+    dplyr::mutate(log_dose = nM_to_logM(.data$dose_nM)) |>
+    normalize_dose_response()
   # factor levels in order of appearance in data
   tgt_factors <- unique(raw_data[["target"]])
   trt_factors <- unique(raw_data[["treatment"]])
