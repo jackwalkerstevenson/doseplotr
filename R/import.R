@@ -135,3 +135,44 @@ import_selectscreen <- function(input_filename){
     dplyr::mutate(target = forcats::fct_relevel(target, tgt_factors)) |>
     dplyr::mutate(treatment = forcats::fct_relevel(treatment, trt_factors))
 }
+
+#' Import and preprocess a KINOMEscan raw data report
+#'
+#' @param input_filename Path to file to import. `import_kinomescan()` expects
+#'   the type of file that Eurofins KINOMEscan offers as a csv download as of
+#'   2023, with the column names unedited. Optionally, a "treatment" column can
+#'   be added containing names to replace the names in the "Compound Name"
+#'   column. Otherwise that column is renamed to "treatment". It expects the
+#'   following column names:
+#'
+#'   * "Compound.Name" (or "treatment")
+#'   * "DiscoveRx Gene Symbol" (or "target")
+#'   * "Compound Concentration (nM)" (or "conc_nM")
+#'   * "Signal" (or "response")
+#' @return The imported data as a tibble. Contains the following column names:
+#' * "treatment"
+#' * "target"
+#' * "response"
+#' * "dose_nM"
+#' * "log_dose
+#' @export
+import_kinomescan <- function(input_filename){
+  raw_data <- readr::read_csv(input_filename, name_repair = "universal") |>
+    dplyr::rename(response = .data$Signal)
+  # rename relevant columns to common names
+  if(!("treatment" %in% colnames(raw_data))){
+    raw_data <- raw_data |> dplyr::rename(treatment = .data$Compound.Name)}
+  if(!("target" %in% colnames(raw_data))){
+    raw_data <- raw_data |> dplyr::rename(target = .data$DiscoveRx.Gene.Symbol)}
+  if(!("conc_nM" %in% colnames(raw_data))){
+    raw_data <- raw_data |>
+      dplyr::rename(dose_nM = .data$Compound.Concentration..nM.)}
+  raw_data |> dplyr::mutate(log_dose = nM_to_logM(.data$dose_nM)) # log dose
+  # factor levels in order of appearance in data
+  tgt_factors <- unique(raw_data[["target"]])
+  trt_factors <- unique(raw_data[["treatment"]])
+  target <- treatment <- NULL # needed to suppress global variable error
+  raw_data |>
+    dplyr::mutate(target = forcats::fct_relevel(target, tgt_factors)) |>
+    dplyr::mutate(treatment = forcats::fct_relevel(treatment, trt_factors))
+}
