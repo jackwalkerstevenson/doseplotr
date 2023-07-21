@@ -38,5 +38,6 @@ summarize_models <- function(data, activity_col="response_norm"){
         model |> purrr::map_dbl(\(x){get_low_dose_asymptote(x)}),
       high_dose_asymptote =
         model |> purrr::map_dbl(\(x){get_high_dose_asymptote(x)})
-    )
+    ) |>
+    dplyr::select(-model)
 }
