@@ -8,7 +8,7 @@ base_dose_response(
   plot,
   x_limits,
   font_base_size = 14,
-  xlab = "log10[compound] (M)",
+  xlab = "log10[treatment] (M)",
   ylab = "percent of untreated response",
   legend = TRUE
 )

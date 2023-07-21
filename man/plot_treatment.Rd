@@ -4,7 +4,7 @@
 \alias{plot_treatment}
 \title{Plot dose-response effects of one treatment on all targets}
 \usage{
-plot_treatment(df, trt, response_col = "response", ...)
+plot_treatment(df, trt, response_col = "response", x_limits = NULL, ...)
 }
 \arguments{
 \item{df}{Dataframe containing data to plot. Must contain columns:
