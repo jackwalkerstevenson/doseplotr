@@ -23,13 +23,15 @@ Default is "activity". Typical alternatives might include e.g.
 A summary dataframe containing one row for each combination of
 treatment and target in \code{data} and containing the following columns:
 \itemize{
+\item IC50 nM: the dose at which the response is exactly 50.
 \item EC50_nM: the dose at which 50\% of the maximum response is achieved, whether
 the response is positive or negative.
-\item IC50 nM: the dose at which the response is exactly 50.
 \item EC75_nM: the dose at which 75\% of the maximum response is achieved, whether
 the response is positive or negative.
 \item hill_slope: the \code{eta} parameter from \code{\link[drda:drda]{drda::drda()}}. The rate of growth of
 the model, unsigned (always positive).
+\item low_dose_asymptote: the value of the function as dose -> -Inf.
+\item high_dose_asymptote: the value of the function as dose -> Inf.
 }
 }
 \description{

@@ -1,17 +1,43 @@
 #' Get the Hill slope from a `drda` model
 #'
 #' @param model A logistic model of the type returned by [drda::drda()]
-#'
 #' @return The Hill slope (growth rate) of the model. Unsigned (always
 #'   positive).
 #' @export
-#'
 get_hill_slope <- function(model){
   if(is.null(model)){
     warning("get_hill_slope received a null model. Returning NA")
     return(NA)
   }
   stats::coefficients(model)["eta"]
+}
+
+#' Get the low-dose asymptote from a `drda` model
+#'
+#' @inheritParams get_hill_slope
+#' @return The level of the low-dose asymptote. The value of the model when dose
+#'   -> -Inf.
+#' @export
+get_low_dose_asymptote <- function(model){
+  if(is.null(model)){
+    warning("get_low_dose_asymptote received a null model. Returning NA")
+    return(NA)
+  }
+  stats::coefficients(model)["alpha"]
+}
+
+#' Get the high-dose asymptote from a `drda` model
+#'
+#' @inheritParams get_hill_slope
+#' @return The level of the high-dose asymptote. The value of the model when
+#'   dose -> Inf.
+#' @export
+get_high_dose_asymptote <- function(model){
+  if(is.null(model)){
+    warning("get_high_dose_asymptote received a null model. Returning NA")
+    return(NA)
+  }
+  stats::coefficients(model)["alpha"] + stats::coefficients(model)["delta"]
 }
 
 #' Get effective log10 dose for an exact response level from a drda model
