@@ -2,7 +2,7 @@
 % Please edit documentation in R/aesthetic_utils.R
 \name{viridis_range}
 \alias{viridis_range}
-\title{Get a pleasing range of the viridis color scale for several discrete values}
+\title{Get a range and option for the viridis scale depending on number of values}
 \usage{
 viridis_range(n, reverse = TRUE)
 }
@@ -13,14 +13,17 @@ viridis_range(n, reverse = TRUE)
 first (the default).}
 }
 \value{
-A vector of two numbers: the beginning and end of the range.
+A list of two numbers (the beginning and end of the range) and a
+string (the "option" parameter for the color scale), which will be either
+"viridis" for n<7 or "turbo" for n>7.
 }
 \description{
-\code{viridis_range()} returns a range of the viridis default color scale meant
-for coloring some number of discrete values without using more of the scale
-than necessary. It is intended to solve the problem where very small numbers
-of discrete values (e.g. 2 or 3) are by default displayed at the ends of
-color scale, leading to jarring results like one value being dark purple and
-the other bright yellow. The output of \code{viridis_range()} is intended to be
-used as the "begin" and "end" arguments for \code{ggplot2::scale_color_viridis}.
+\code{viridis_range()} returns a color scale and range for the viridis color scale
+package meant for coloring some number of discrete values without using more
+of the scale than necessary. It is intended to solve the problem where very
+small numbers of discrete values (e.g. 2 or 3) are by default displayed at
+the ends of color scale, leading to jarring results like one value being dark
+purple and the other bright yellow. The output of \code{viridis_range()} is
+intended to be used as the \code{begin}, \code{end} and \code{option} arguments for
+\code{ggplot2::scale_color_viridis}.
 }
