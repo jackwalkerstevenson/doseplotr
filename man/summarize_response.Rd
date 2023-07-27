@@ -12,7 +12,15 @@ summarize_response(df, response_col = "response")
 \item{response_col}{Name of the column containing response data to summarize}
 }
 \value{
-A dataframe containing the summarized data
+A dataframe containing the data summarized by \code{dplyr::summarize()}.
+Columns are:
+\itemize{
+\item "sem": the standard error of the mean of the response values
+\item "mean_response": the mean of the response values
+\item "w": the width values for error bars.
+This is a workaround for \code{ggplot2::ggplot()} behavior where the width of
+error bars depends on the size of the group.
+}
 }
 \description{
 Summarize replicate data for plotting

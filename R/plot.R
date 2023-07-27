@@ -1,7 +1,13 @@
 #' Summarize replicate data for plotting
 #' @param df Dataframe containing the data to plot
 #' @param response_col Name of the column containing response data to summarize
-#' @return A dataframe containing the summarized data
+#' @return A dataframe containing the data summarized by `dplyr::summarize()`.
+#'   Columns are:
+#' * "sem": the standard error of the mean of the response values
+#' * "mean_response": the mean of the response values
+#' * "w": the width values for error bars.
+#'   This is a workaround for `ggplot2::ggplot()` behavior where the width of
+#'   error bars depends on the size of the group.
 #' @export
 summarize_response <- function(df, response_col = "response"){
   dplyr::summarize(df,
@@ -33,7 +39,7 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
   # manually construct minor ticks
   minor_x <- log10(rep(1:9, x_max - x_min) * (10^rep(x_min:(x_max - 1),
                                                      each = 9)))
-  plot +
+  p <- plot +
     # ggprism guide to end at last tick
     ggplot2::scale_x_continuous(guide =ggprism::guide_prism_offset_minor(),
                        breaks = scales::breaks_width(1),
@@ -48,10 +54,8 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
     ggplot2::geom_errorbar(ggplot2::aes(ymax = .data$mean_response + .data$sem,
                                         ymin = .data$mean_response - .data$sem,
                                         width = .data$w)) +
-    # use drm method from drc package to plot dose response curve
-    # todo: replace this with same drda method that fits EC50s
-    ggplot2::geom_smooth(method = "drm", method.args = list(fct = drc::L.4()), se = FALSE, linewidth = 1) +
     ggplot2::labs(x = xlab, y = ylab)
+  return(p)
 }
 
 #' Save a plot as an image with predictable plot dimensions
@@ -103,6 +107,8 @@ save_plot <- function(plot, filename,
 #' * response column, specified in response_col argument
 #' @param trt Name of treatment to plot
 #' @param response_col Name of column containing response data
+#' @param x_limits Limits for x axis of plot. Optional: if not provided, will be
+#'   calculated automatically.
 #' @param ... Extra parameters to pass to `base_dose_response()`
 #'
 #' @return A ggplot2 plot of the dose-response effect of the specified treatment
@@ -112,23 +118,31 @@ plot_treatment <- function(df, trt,
                            response_col = "response",
                            x_limits = NULL,
                            ...){
-  summary <- df |>
-    filter_trt_tgt(trt = trt) |>
-    dplyr::group_by(.data$target, .data$log_dose) |>
+  # get data for specified treatment
+  data <- df |> filter_trt_tgt(trt = trt)
+  # calculate x limits if not specified
+  if(is.null(x_limits)){
+    x_min <- floor(min(data$log_dose))
+    x_max <- ceiling(max(data$log_dose))
+    x_limits <- c(x_min, x_max)}
+  # summarize actual data to plot points and error bars
+  data_summary <- data |>
+    dplyr::group_by(.data$target, .data$log_dose) |> # group by target
     summarize_response(response_col = response_col)
+  # fit models to data to plot model prediction curves
+  dose_seq <- seq(x_min, x_max, length.out = 100) # doses for predictions
+  model_predictions <- data |>
+    dplyr::group_by(.data$target, .data$log_dose) |>
+    summarize_models(response_col = response_col) |>
+    get_predictions(dose_seq, response_col = "mean_response") # name for plotting
   # set up color parameters based on number of targets
-  num_targets <- length(unique(summary$target))
+  num_targets <- length(unique(data_summary$target))
   vr <- viridis_range(num_targets)
   vr_begin <- vr[[1]]
   vr_end <- vr[[2]]
   vr_option <- vr[[3]]
-  # calculate x limits if not specified
-  if(is.null(x_limits)){
-    x_min <- floor(min(summary$log_dose))
-    x_max <- ceiling(max(summary$log_dose))
-    x_limits <- c(x_min, x_max)
-  }
-  p <- {ggplot2::ggplot(summary,
+  # plot points and error bars from the summarized data
+  p <- {ggplot2::ggplot(data_summary,
                         ggplot2::aes(x = .data$log_dose,
                                      y = .data$mean_response,
                                      color = .data$target)) +
@@ -138,19 +152,15 @@ plot_treatment <- function(df, trt,
       ggplot2::labs(title = trt)
   } |>
     base_dose_response(x_limits = x_limits, ...)
+  # plot model predictions for models that were fit successfully
+  p <- p +
+    ggplot2::geom_line(data = model_predictions)
   return(p)
 }
 
 #' Plot dose-response effects of one target on all treatments
-#' @param df Dataframe containing data to plot. Must contain columns:
-#'
-#' * treatment
-#' * target
-#' * log_dose
-#' * response column, specified in response_col argument
+#' @inheritParams plot_treatment
 #' @param tgt Name of target to plot
-#' @param response_col Name of column containing response data
-#' @param ... Extra parameters to pass to `base_dose_response()`
 #'
 #' @return A ggplot2 plot of the dose-response effect of the specified target on
 #'   all treatments

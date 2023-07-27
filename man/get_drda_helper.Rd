@@ -4,20 +4,20 @@
 \alias{get_drda_helper}
 \title{Get a drda dose-response model without bounds on parameters}
 \usage{
-get_drda_helper(data, activity_col = "response", ...)
+get_drda_helper(data, response_col = "response", ...)
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for only one treatment
 on one target. If needed, filter data in advance with \code{\link[=filter_trt_tgt]{filter_trt_tgt()}}.
 The dataframe should contain the following columns:
 \itemize{
-\item "activity" (default) or other activity column name (see \code{activity_col})
+\item "response" (default) or other response column name (see \code{response_col})
 \item log_dose: dose of treatment in log10 units
 }}
 
-\item{activity_col}{Name of the column containing activity of treatment.
-Default is "activity". Typical alternatives might include e.g.
-"percent_inhibition", "viability", "growth".}
+\item{response_col}{Name of the column containing response values.
+Default is "response". Typical alternatives might include e.g.
+"percent_inhibition", "viability", "growth", "activity".}
 
 \item{...}{Additional arguments to be passed to \code{\link[drda:drda]{drda::drda()}}, e.g. bounds.}
 }

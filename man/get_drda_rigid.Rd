@@ -4,20 +4,20 @@
 \alias{get_drda_rigid}
 \title{Get a dose-response model from data with rigid bounds on parameters}
 \usage{
-get_drda_rigid(data, activity_col = "response")
+get_drda_rigid(data, response_col = "response")
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for only one treatment
 on one target. If needed, filter data in advance with \code{\link[=filter_trt_tgt]{filter_trt_tgt()}}.
 The dataframe should contain the following columns:
 \itemize{
-\item "activity" (default) or other activity column name (see \code{activity_col})
+\item "response" (default) or other response column name (see \code{response_col})
 \item log_dose: dose of treatment in log10 units
 }}
 
-\item{activity_col}{Name of the column containing activity of treatment.
-Default is "activity". Typical alternatives might include e.g.
-"percent_inhibition", "viability", "growth".}
+\item{response_col}{Name of the column containing response values.
+Default is "response". Typical alternatives might include e.g.
+"percent_inhibition", "viability", "growth", "activity".}
 }
 \value{
 A dose-response model object of class \code{drda}.
@@ -30,18 +30,18 @@ unrealistic fits and fixes the 0-dose asymptote at 0 or 100 depending on
 whether the model is increasing or decreasing.
 }
 \details{
-If the height of the model is negative (if activity decreases at higher
+If the height of the model is negative (if response decreases at higher
 dose), the zero-dose asymptote is fixed at 100, and the height is
 bounded at the negative height of the zero-dose asymptote to avoid producing
 models with infinite-dose asymptotes far below 0. Note that after the model
 is refit with this bound, the height of the zero-dose asymptote may decrease
 slightly, so the infinite-dose asymptote may still end up slightly below 0.
 
-If the height of the model is positive (if activity increases at higher
+If the height of the model is positive (if response increases at higher
 dose), the zero-dose asymptote is fixed at 0, and the height is
 bounded at 100 minus the height of the 0-dose asymptote to avoid producing
 models with infinite-dose asymptotes far above 100. This is only valid for
-activity units like percent inhibition that should not realistically exceed
+response units like percent inhibition that should not realistically exceed
 100. Note that after the model is refit with this bound, the height of the
 0-dose asymptote may increase slightly, so the maximum-dose asymptote may
 still end up slightly above 100.

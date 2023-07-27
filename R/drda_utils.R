@@ -5,8 +5,8 @@
 #'   positive).
 #' @export
 get_hill_slope <- function(model){
-  if(is.null(model)){
-    warning("get_hill_slope received a null model. Returning NA")
+  if(!"drda" %in% class(model)){
+    warning("get_IC_log received no model. Returning NA")
     return(NA)
   }
   stats::coefficients(model)["eta"]
@@ -19,8 +19,8 @@ get_hill_slope <- function(model){
 #'   -> -Inf.
 #' @export
 get_low_dose_asymptote <- function(model){
-  if(is.null(model)){
-    warning("get_low_dose_asymptote received a null model. Returning NA")
+  if(!"drda" %in% class(model)){
+    warning("get_IC_log received no model. Returning NA")
     return(NA)
   }
   stats::coefficients(model)["alpha"]
@@ -33,8 +33,8 @@ get_low_dose_asymptote <- function(model){
 #'   dose -> Inf.
 #' @export
 get_high_dose_asymptote <- function(model){
-  if(is.null(model)){
-    warning("get_high_dose_asymptote received a null model. Returning NA")
+  if(!"drda" %in% class(model)){
+    warning("get_IC_log received no model. Returning NA")
     return(NA)
   }
   stats::coefficients(model)["alpha"] + stats::coefficients(model)["delta"]
@@ -52,12 +52,12 @@ get_high_dose_asymptote <- function(model){
 #' @return The effective dose in log10 units.
 #' @export
 get_IC_log <- function(model, level = 50){
-  if(is.null(model)){
-    warning("get_IC_log received a null model. Returning NA")
+  if(!"drda" %in% class(model)){
+    warning("get_IC_log received no model. Returning NA")
     return(NA)
   }
   IC <- drda::effective_dose(model, level, type = "absolute")[1]
-  if(is.na(IC)){warning("Unable to fit an IC50")}
+  if(is.na(IC)){warning("Unable to fit an IC50. Returning NA")}
   return(IC)
 }
 
@@ -77,8 +77,8 @@ get_IC_log <- function(model, level = 50){
 #'   EC50.
 #' @export
 get_EC_log <- function(model, level=50){
-  if(is.null(model)){
-    warning("get_EC_log received a null model. Returning NA")
+  if(!"drda" %in% class(model)){
+    warning("get_IC_log received no model. Returning NA")
     return(NA)
   }
   assertthat::assert_that(0<level && level<100,
@@ -123,13 +123,13 @@ get_EC_nM <- function(model, level=50){
 #' @param delta The delta parameter from a `drda` model.
 #' @param eta The eta parameter from a `drda` model.
 #' @param log_dose The dose of the single point measurement in log units
-#' @param activity The activity (NOT percent inhibition) observed at the tested
+#' @param response The response (NOT percent inhibition) observed at the tested
 #'   dose
 #' @return The estimated EC50 in log10 units
 #' @export
-EC50_log_from_point_params <- function(alpha, delta, eta, log_dose, activity){
+EC50_log_from_point_params <- function(alpha, delta, eta, log_dose, response){
   # 4-parameter logistic equation solved for phi
-  (log(delta/(activity-alpha)-1)/eta + log_dose) |> unname()
+  (log(delta/(response-alpha)-1)/eta + log_dose) |> unname()
 }
 
 #' Estimate log10 EC50 from one dose-response point and 3 parameters of a model
@@ -137,10 +137,10 @@ EC50_log_from_point_params <- function(alpha, delta, eta, log_dose, activity){
 #' @inheritParams get_hill_slope
 #' @inherit EC50_log_from_point_params params return
 #' @export
-EC50_log_from_point_model <- function(model, log_dose, activity){
+EC50_log_from_point_model <- function(model, log_dose, response){
   c <- stats::coefficients(model)
   EC50_log_from_point_params(c["alpha"], c["delta"], c["eta"],
-                              log_dose, activity)
+                              log_dose, response)
 }
 
 
@@ -149,7 +149,61 @@ EC50_log_from_point_model <- function(model, log_dose, activity){
 #' @inherit EC50_log_from_point_model params return
 #' @param dose_nM The dose of the single point measurement in nanomolar units
 #' @export
-EC50_nM_from_point_model <- function(model, dose_nM, activity){
-  EC50_log_from_point_model(model, nM_to_logM(dose_nM), activity) |>
+EC50_nM_from_point_model <- function(model, dose_nM, response){
+  EC50_log_from_point_model(model, nM_to_logM(dose_nM), response) |>
     logM_to_nM()
+}
+
+
+#' Get a dataframe of the predictions of a single dose-response model
+#'
+#' `predict_helper()` is a helper function for `get_predictions()`. Its logic only depends on `model` and `dose_seq`, but it also takes `trt`, `tgt` and `response_col` just so that the returned dataframe will have proper column names.
+#' @param model The model to use to predict responses
+#' @param dose_seq The doses for which to predict responses
+#' @param trt Name of the treatment used to fit the model
+#' @param tgt Name of the target used to fit the model
+#' @param response_col Name of the column containing predicted responses
+#' @return A dataframe containing the predictions of the model. Has columns:
+#' * treatment
+#' * target
+#' * log_dose
+#' * response (or other column name specified in response_col)
+#' If no model is passed, returns null.
+predict_helper <- function(model, dose_seq, trt, tgt, response_col){
+  if("drda" %in% class(model)){
+    data.frame(
+      treatment = trt,
+      target = tgt,
+      log_dose = dose_seq,
+      response = stats::predict(model,
+                                newdata = data.frame(log_dose = dose_seq))) |>
+      # overbuilt but works: rename column from argument
+      dplyr::rename_with(\(col){ifelse(col == "response", response_col, col)})
+  }
+}
+
+#' Get a dataframe of predictions from desired doses and a dataframe of models
+#'
+#' @param models_df Dataframe containing models and information about them. Has columns:
+#' * "treatment": treatment for which the model was fit
+#' * "target": target for which the model was fit
+#' * "model": dose-response model fit for the specified treatment and target
+#' @param dose_seq Vector of doses for which to predict responses
+#' @param response_col Name for the column of predicted responses
+#' @return A dataframe containing predicted values. Has columns:
+#' * treatment
+#' * target
+#' * log_dose
+#' * response (or other column name specified in response_col)
+#' @export
+get_predictions <- function(models_df, dose_seq, response_col = "mean_response"){
+  mapply(predict_helper,
+         models_df$model,
+         # make list of copies of dose_seq to make mapply() happy
+         lapply(seq_len(length(models_df)), \(x){dose_seq}),
+         models_df$treatment,
+         models_df$target,
+         response_col = response_col,
+         SIMPLIFY = FALSE) |>
+    dplyr::bind_rows() # bind list of dataframes into one dataframe
 }

@@ -10,7 +10,7 @@ get_drda_fixed(
   delta = NA,
   eta = NA,
   phi = NA,
-  activity_col = "response"
+  response_col = "response"
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ get_drda_fixed(
 on one target. If needed, filter data in advance with \code{\link[=filter_trt_tgt]{filter_trt_tgt()}}.
 The dataframe should contain the following columns:
 \itemize{
-\item "activity" (default) or other activity column name (see \code{activity_col})
+\item "response" (default) or other response column name (see \code{response_col})
 \item log_dose: dose of treatment in log10 units
 }}
 
@@ -34,9 +34,9 @@ See \code{\link[drda:drda]{drda::drda()}}.}
 
 \item{phi}{Optional: fixed value of mid-value or EC50. See \code{\link[drda:drda]{drda::drda()}}.}
 
-\item{activity_col}{Name of the column containing activity of treatment.
-Default is "activity". Typical alternatives might include e.g.
-"percent_inhibition", "viability", "growth".}
+\item{response_col}{Name of the column containing response values.
+Default is "response". Typical alternatives might include e.g.
+"percent_inhibition", "viability", "growth", "activity".}
 }
 \value{
 A dose-response model object of class \code{drda}.
