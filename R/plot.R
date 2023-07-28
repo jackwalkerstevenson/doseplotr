@@ -156,7 +156,7 @@ plot_treatment <- function(df, trt,
     base_dose_response(x_limits = x_limits, ...)
   # plot model predictions for models that were fit successfully
   p <- p +
-    ggplot2::geom_line(data = model_predictions)
+    ggplot2::geom_line(data = model_predictions, linewidth = .75, alpha = 0.8)
   return(p)
 }
 
