@@ -45,6 +45,8 @@ summarize_models <- function(data, response_col="response", rigid = FALSE){
       low_dose_asymptote =
         model |> purrr::map_dbl(\(x){get_low_dose_asymptote(x)}),
       high_dose_asymptote =
-        model |> purrr::map_dbl(\(x){get_high_dose_asymptote(x)})
+        model |> purrr::map_dbl(\(x){get_high_dose_asymptote(x)}),
+      min_dose = min({data |> filter_trt_tgt(.data$treatment, .data$target)}$log_dose),
+      max_dose = max({data |> filter_trt_tgt(.data$treatment, .data$target)}$log_dose)
     )
 }

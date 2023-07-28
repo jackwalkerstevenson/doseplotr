@@ -4,18 +4,22 @@
 \alias{predict_helper}
 \title{Get a dataframe of the predictions of a single dose-response model}
 \usage{
-predict_helper(model, dose_seq, trt, tgt, response_col)
+predict_helper(model, min_dose, max_dose, trt, tgt, response_col)
 }
 \arguments{
 \item{model}{The model to use to predict responses}
 
-\item{dose_seq}{The doses for which to predict responses}
+\item{min_dose}{Minimum dose in the data. Lower limit of predictions}
+
+\item{max_dose}{Maximum dose in the dat. Upper limit of predictions}
 
 \item{trt}{Name of the treatment used to fit the model}
 
 \item{tgt}{Name of the target used to fit the model}
 
 \item{response_col}{Name of the column containing predicted responses}
+
+\item{dose_seq}{The doses for which to predict responses}
 }
 \value{
 A dataframe containing the predictions of the model. Has columns:

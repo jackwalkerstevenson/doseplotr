@@ -4,7 +4,7 @@
 \alias{get_predictions}
 \title{Get a dataframe of predictions from desired doses and a dataframe of models}
 \usage{
-get_predictions(models_df, dose_seq, response_col = "mean_response")
+get_predictions(models_df, response_col = "mean_response")
 }
 \arguments{
 \item{models_df}{Dataframe containing models and information about them. Has columns:
@@ -14,9 +14,9 @@ get_predictions(models_df, dose_seq, response_col = "mean_response")
 \item "model": dose-response model fit for the specified treatment and target
 }}
 
-\item{dose_seq}{Vector of doses for which to predict responses}
-
 \item{response_col}{Name for the column of predicted responses}
+
+\item{dose_seq}{Vector of doses for which to predict responses}
 }
 \value{
 A dataframe containing predicted values. Has columns:

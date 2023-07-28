@@ -162,6 +162,8 @@ EC50_nM_from_point_model <- function(model, dose_nM, response){
 #' @param dose_seq The doses for which to predict responses
 #' @param trt Name of the treatment used to fit the model
 #' @param tgt Name of the target used to fit the model
+#' @param min_dose Minimum dose in the data. Lower limit of predictions
+#' @param max_dose Maximum dose in the dat. Upper limit of predictions
 #' @param response_col Name of the column containing predicted responses
 #' @return A dataframe containing the predictions of the model. Has columns:
 #' * treatment
@@ -169,8 +171,9 @@ EC50_nM_from_point_model <- function(model, dose_nM, response){
 #' * log_dose
 #' * response (or other column name specified in response_col)
 #' If no model is passed, returns null.
-predict_helper <- function(model, dose_seq, trt, tgt, response_col){
+predict_helper <- function(model, min_dose, max_dose, trt, tgt, response_col){
   if("drda" %in% class(model)){
+    dose_seq <- seq(min_dose, max_dose, length.out = 100)
     data.frame(
       treatment = trt,
       target = tgt,
@@ -196,11 +199,11 @@ predict_helper <- function(model, dose_seq, trt, tgt, response_col){
 #' * log_dose
 #' * response (or other column name specified in response_col)
 #' @export
-get_predictions <- function(models_df, dose_seq, response_col = "mean_response"){
+get_predictions <- function(models_df, response_col = "mean_response"){
   mapply(predict_helper,
          models_df$model,
-         # make list of copies of dose_seq to make mapply() happy
-         lapply(seq_len(length(models_df)), \(x){dose_seq}),
+         models_df$min_dose,
+         models_df$max_dose,
          models_df$treatment,
          models_df$target,
          response_col = response_col,
