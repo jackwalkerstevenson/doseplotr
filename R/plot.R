@@ -100,12 +100,13 @@ save_plot <- function(plot, filename,
 
 #' Plot dose-response effects of one treatment on all targets
 #' @param df Dataframe containing data to plot. Must contain columns:
-#'
 #' * treatment
 #' * target
 #' * log_dose
 #' * response column, specified in response_col argument
 #' @param trt Name of treatment to plot
+#' @param rigid Whether to set rigid value for low-dose asymptote. 100 if
+#'   decreasing, 0 if increasing.
 #' @param response_col Name of column containing response data
 #' @param x_limits Limits for x axis of plot. Optional: if not provided, will be
 #'   calculated automatically.
@@ -115,6 +116,7 @@ save_plot <- function(plot, filename,
 #'   on all targets
 #' @export
 plot_treatment <- function(df, trt,
+                           rigid = FALSE,
                            response_col = "response",
                            x_limits = NULL,
                            ...){
@@ -133,7 +135,7 @@ plot_treatment <- function(df, trt,
   dose_seq <- seq(x_min, x_max, length.out = 100) # doses for predictions
   model_predictions <- data |>
     dplyr::group_by(.data$target, .data$log_dose) |>
-    summarize_models(response_col = response_col) |>
+    summarize_models(response_col = response_col, rigid = rigid) |>
     get_predictions(dose_seq, response_col = "mean_response") # name for plotting
   # set up color parameters based on number of targets
   num_targets <- length(unique(data_summary$target))

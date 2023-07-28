@@ -7,6 +7,8 @@
 #' * "response_norm" (default) or other activity column name from `response_col`
 #' * log_dose: dose of treatment in log(molar) units
 #' @inheritParams get_drda
+#' @param rigid Whether to set a rigid low-dose asymptode with
+#'   `get_drda_rigid()`
 #' @return A summary dataframe containing one row for each combination of
 #'   treatment and target in `data` and containing the following columns:
 #'
@@ -21,13 +23,17 @@
 #' * "low_dose_asymptote": the value of the function as dose -> -Inf.
 #' * "high_dose_asymptote": the value of the function as dose -> Inf.
 #' @export
-summarize_models <- function(data, response_col="response_norm"){
-  # todo: change default to "response"
+summarize_models <- function(data, response_col="response", rigid = FALSE){
   model <- NULL # suppress global variable error
   data |> dplyr::group_by(.data$treatment, .data$target) |>
     dplyr::summarize(
-      model = list(data |> filter_trt_tgt(.data$treatment, .data$target) |>
-        get_drda(response_col)),
+      model =
+        if(rigid[1]){
+          list(data |> filter_trt_tgt(.data$treatment, .data$target) |>
+                 get_drda_rigid(response_col))
+        }
+      else{list(data |> filter_trt_tgt(.data$treatment, .data$target) |>
+                  get_drda(response_col))},
       IC50_nM =
         model |> purrr::map_dbl(\(x){get_IC_nM(x, 50)}),
       EC50_nM =

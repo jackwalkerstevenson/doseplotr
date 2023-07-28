@@ -4,7 +4,14 @@
 \alias{plot_treatment}
 \title{Plot dose-response effects of one treatment on all targets}
 \usage{
-plot_treatment(df, trt, response_col = "response", x_limits = NULL, ...)
+plot_treatment(
+  df,
+  trt,
+  rigid = FALSE,
+  response_col = "response",
+  x_limits = NULL,
+  ...
+)
 }
 \arguments{
 \item{df}{Dataframe containing data to plot. Must contain columns:
@@ -16,6 +23,9 @@ plot_treatment(df, trt, response_col = "response", x_limits = NULL, ...)
 }}
 
 \item{trt}{Name of treatment to plot}
+
+\item{rigid}{Whether to set rigid value for low-dose asymptote. 100 if
+decreasing, 0 if increasing.}
 
 \item{response_col}{Name of column containing response data}
 
