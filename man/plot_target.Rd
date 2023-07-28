@@ -4,7 +4,14 @@
 \alias{plot_target}
 \title{Plot dose-response effects of one target on all treatments}
 \usage{
-plot_target(df, tgt, response_col = "response", x_limits = NULL, ...)
+plot_target(
+  df,
+  tgt,
+  rigid = FALSE,
+  response_col = "response",
+  x_limits = NULL,
+  ...
+)
 }
 \arguments{
 \item{df}{Dataframe containing data to plot. Must contain columns:
@@ -16,6 +23,9 @@ plot_target(df, tgt, response_col = "response", x_limits = NULL, ...)
 }}
 
 \item{tgt}{Name of target to plot}
+
+\item{rigid}{Whether to set rigid value for low-dose asymptote. 100 if
+decreasing, 0 if increasing.}
 
 \item{response_col}{Name of column containing response data}
 
