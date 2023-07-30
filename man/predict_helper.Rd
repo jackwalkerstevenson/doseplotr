@@ -4,22 +4,22 @@
 \alias{predict_helper}
 \title{Get a dataframe of the predictions of a single dose-response model}
 \usage{
-predict_helper(model, min_dose, max_dose, trt, tgt, response_col)
+predict_helper(model, min_log10_dose, max_log10_dose, trt, tgt, response_col)
 }
 \arguments{
 \item{model}{The model to use to predict responses}
 
-\item{min_dose}{Minimum dose in the data. Lower limit of predictions}
+\item{min_log10_dose}{Minimum dose in the data in log10 units. Lower limit of
+predictions}
 
-\item{max_dose}{Maximum dose in the dat. Upper limit of predictions}
+\item{max_log10_dose}{Maximum dose in the data in log10 units. Upper limit of
+predictions}
 
 \item{trt}{Name of the treatment used to fit the model}
 
 \item{tgt}{Name of the target used to fit the model}
 
 \item{response_col}{Name of the column containing predicted responses}
-
-\item{dose_seq}{The doses for which to predict responses}
 }
 \value{
 A dataframe containing the predictions of the model. Has columns:
@@ -32,5 +32,8 @@ If no model is passed, returns null.
 }
 }
 \description{
-\code{predict_helper()} is a helper function for \code{get_predictions()}. Its logic only depends on \code{model} and \code{dose_seq}, but it also takes \code{trt}, \code{tgt} and \code{response_col} just so that the returned dataframe will have proper column names.
+\code{predict_helper()} is a helper function for \code{get_predictions()}. Its logic
+only depends on \code{model} and \code{dose_seq}, but it also takes \code{trt}, \code{tgt} and
+\code{response_col} just so that the returned dataframe will have proper column
+names.
 }

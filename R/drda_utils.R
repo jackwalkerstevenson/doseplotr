@@ -157,23 +157,29 @@ EC50_nM_from_point_model <- function(model, dose_nM, response){
 
 #' Get a dataframe of the predictions of a single dose-response model
 #'
-#' `predict_helper()` is a helper function for `get_predictions()`. Its logic only depends on `model` and `dose_seq`, but it also takes `trt`, `tgt` and `response_col` just so that the returned dataframe will have proper column names.
+#' `predict_helper()` is a helper function for `get_predictions()`. Its logic
+#' only depends on `model` and `dose_seq`, but it also takes `trt`, `tgt` and
+#' `response_col` just so that the returned dataframe will have proper column
+#' names.
 #' @param model The model to use to predict responses
-#' @param dose_seq The doses for which to predict responses
 #' @param trt Name of the treatment used to fit the model
 #' @param tgt Name of the target used to fit the model
-#' @param min_dose Minimum dose in the data. Lower limit of predictions
-#' @param max_dose Maximum dose in the dat. Upper limit of predictions
+#' @param min_log10_dose Minimum dose in the data in log10 units. Lower limit of
+#'   predictions
+#' @param max_log10_dose Maximum dose in the data in log10 units. Upper limit of
+#'   predictions
 #' @param response_col Name of the column containing predicted responses
 #' @return A dataframe containing the predictions of the model. Has columns:
 #' * treatment
 #' * target
 #' * log_dose
 #' * response (or other column name specified in response_col)
-#' If no model is passed, returns null.
-predict_helper <- function(model, min_dose, max_dose, trt, tgt, response_col){
+#'   If no model is passed, returns null.
+predict_helper <- function(model,
+                           min_log10_dose, max_log10_dose,
+                           trt, tgt, response_col){
   if("drda" %in% class(model)){
-    dose_seq <- seq(min_dose, max_dose, length.out = 100)
+    dose_seq <- seq(min_log10_dose, max_log10_dose, length.out = 100)
     data.frame(
       treatment = trt,
       target = tgt,
@@ -191,7 +197,6 @@ predict_helper <- function(model, min_dose, max_dose, trt, tgt, response_col){
 #' * "treatment": treatment for which the model was fit
 #' * "target": target for which the model was fit
 #' * "model": dose-response model fit for the specified treatment and target
-#' @param dose_seq Vector of doses for which to predict responses
 #' @param response_col Name for the column of predicted responses
 #' @return A dataframe containing predicted values. Has columns:
 #' * treatment
@@ -202,8 +207,8 @@ predict_helper <- function(model, min_dose, max_dose, trt, tgt, response_col){
 get_predictions <- function(models_df, response_col = "mean_response"){
   mapply(predict_helper,
          models_df$model,
-         models_df$min_dose,
-         models_df$max_dose,
+         models_df$min_log10_dose,
+         models_df$max_log10_dose,
          models_df$treatment,
          models_df$target,
          response_col = response_col,

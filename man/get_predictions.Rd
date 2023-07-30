@@ -15,8 +15,6 @@ get_predictions(models_df, response_col = "mean_response")
 }}
 
 \item{response_col}{Name for the column of predicted responses}
-
-\item{dose_seq}{Vector of doses for which to predict responses}
 }
 \value{
 A dataframe containing predicted values. Has columns:
