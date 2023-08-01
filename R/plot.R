@@ -27,13 +27,15 @@ summarize_response <- function(df, response_col = "response"){
 #' @param xlab The label for the x axis
 #' @param ylab The label for the y axis
 #' @param legend Whether or not the plot should have a legend (default is TRUE)
+#' @param grid Whether or not the plot should have a grid (default is FALSE)
 #' @return The plot with added objects
 #' @importFrom ggprism guide_prism_offset_minor
 #' @export
 base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                xlab = "log10[treatment] (M)",
                                ylab = "% untreated response",
-                               legend = TRUE){
+                               legend = TRUE,
+                               grid = FALSE){
   x_min <- x_limits[1]
   x_max <- x_limits[2]
   # manually construct minor ticks
@@ -51,6 +53,13 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
     ggprism::theme_prism(base_size = font_base_size) + # prism theme
     ggplot2::theme(plot.background = ggplot2::element_blank()) + # transparent
     {if(!legend) ggplot2::theme(legend.position = "none")} + # legend option
+    {if(grid) ggplot2::theme(panel.grid =
+                               ggplot2::element_line(color = "black",
+                                                     linewidth = 0.2),
+                             panel.grid.minor =
+                               ggplot2::element_line(color = "black",
+                                                     linewidth = 0.1,
+                                                     linetype = "dotted"))} +
     ggplot2::geom_errorbar(ggplot2::aes(ymax = .data$mean_response + .data$sem,
                                         ymin = .data$mean_response - .data$sem,
                                         width = .data$w)) +

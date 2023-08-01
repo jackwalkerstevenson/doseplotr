@@ -9,8 +9,9 @@ base_dose_response(
   x_limits,
   font_base_size = 14,
   xlab = "log10[treatment] (M)",
-  ylab = "percent of untreated response",
-  legend = TRUE
+  ylab = "\% untreated response",
+  legend = TRUE,
+  grid = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ base_dose_response(
 \item{ylab}{The label for the y axis}
 
 \item{legend}{Whether or not the plot should have a legend (default is TRUE)}
+
+\item{grid}{Whether or not the plot should have a grid (default is FALSE)}
 }
 \value{
 The plot with added objects
