@@ -32,7 +32,7 @@ summarize_response <- function(df, response_col = "response"){
 #' @export
 base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                xlab = "log10[treatment] (M)",
-                               ylab = "percent of untreated response",
+                               ylab = "% untreated response",
                                legend = TRUE){
   x_min <- x_limits[1]
   x_max <- x_limits[2]
@@ -82,7 +82,8 @@ save_plot <- function(plot, filename,
                       legend = TRUE, legend_len = NULL, font_base_size = 14,
                       nrow = 1, ncol = 1,
                       width = NULL, height = NULL){
-  facet_size <- 4 # base measurement of both width and height before legend
+  base_width <- 4.5 # base measurement of width before legend
+  base_height <- 4 # base measurement of height before legend
   legend_pad <- 0.3 # extra width for legend icon
   text_factor <- font_base_size / 120 # approx width per character of longest legend text
   # if legend length is not provided, take a wild guess
@@ -90,11 +91,11 @@ save_plot <- function(plot, filename,
     # if width is not provided, calculate width from length of legend text
     if(is.null(width)){
       if(legend){
-        width <- ncol * facet_size + legend_pad + legend_len * text_factor}
-      else{width <- ncol * facet_size}
+        width <- ncol * base_width + legend_pad + legend_len * text_factor}
+      else{width <- ncol * base_width}
     }
   if(is.null(height)){
-    height <- nrow * facet_size
+    height <- nrow * base_height
   }
   ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height)}
 
