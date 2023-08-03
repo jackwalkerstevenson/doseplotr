@@ -21,6 +21,8 @@ summarize_response <- function(df, response_col = "response"){
 
 #' Add ggplot objects common to all dose-response plots
 #'
+#' `base_dose_response()` is a helper function that adds the ggplot objects
+#' common to doseplotr dose-response plots.
 #' @param plot ggplot2 plot to which to add objects
 #' @param x_limits Limits of the x axis. Vector of form c(start, end)
 #' @param font_base_size Font size in points. Default is 14 from theme_prism
@@ -28,7 +30,15 @@ summarize_response <- function(df, response_col = "response"){
 #' @param ylab The label for the y axis
 #' @param legend Whether or not the plot should have a legend (default is TRUE)
 #' @param grid Whether or not the plot should have a grid (default is FALSE)
-#' @return The plot with added objects
+#' @return The plot with added objects. These are:
+#' * error bars for mean plus/minus SEM of response
+#' * prism theme
+#' * x axis scale with major breaks at log10 intervals and logistic minor breaks
+#' * y axis scale with zoom from 0 to max and manual 25% breaks
+#' * transparent background
+#' * optional removed legend
+#' * optional major and minor grid
+#' * x and y labels from arguments
 #' @importFrom ggprism guide_prism_offset_minor
 #' @export
 base_dose_response <- function(plot, x_limits, font_base_size = 14,
@@ -38,12 +48,13 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                grid = FALSE){
   x_min <- x_limits[1]
   x_max <- x_limits[2]
-  # manually construct minor ticks
-  minor_x <- log10(rep(1:9, x_max - x_min) * (10^rep(x_min:(x_max - 1),
-                                                     each = 9)))
+  minor_x <- minor_breaks_log(x_min, x_max)
   p <- plot +
+    ggplot2::geom_errorbar(ggplot2::aes(ymax = .data$mean_response + .data$sem,
+                                        ymin = .data$mean_response - .data$sem,
+                                        width = .data$w)) +
     # ggprism guide to end at last tick
-    ggplot2::scale_x_continuous(guide =ggprism::guide_prism_offset_minor(),
+    ggplot2::scale_x_continuous(guide = ggprism::guide_prism_offset_minor(),
                        breaks = scales::breaks_width(1),
                        minor_breaks = minor_x) +
     # ggprism guide to end at last tick
@@ -60,9 +71,6 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                ggplot2::element_line(color = "black",
                                                      linewidth = 0.1,
                                                      linetype = "dotted"))} +
-    ggplot2::geom_errorbar(ggplot2::aes(ymax = .data$mean_response + .data$sem,
-                                        ymin = .data$mean_response - .data$sem,
-                                        width = .data$w)) +
     ggplot2::labs(x = xlab, y = ylab)
   return(p)
 }

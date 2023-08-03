@@ -30,8 +30,19 @@ base_dose_response(
 \item{grid}{Whether or not the plot should have a grid (default is FALSE)}
 }
 \value{
-The plot with added objects
+The plot with added objects. These are:
+\itemize{
+\item error bars for mean plus/minus SEM of response
+\item prism theme
+\item x axis scale with major breaks at log10 intervals and logistic minor breaks
+\item y axis scale with zoom from 0 to max and manual 25\% breaks
+\item transparent background
+\item optional removed legend
+\item optional major and minor grid
+\item x and y labels from arguments
+}
 }
 \description{
-Add ggplot objects common to all dose-response plots
+\code{base_dose_response()} is a helper function that adds the ggplot objects
+common to doseplotr dose-response plots.
 }
