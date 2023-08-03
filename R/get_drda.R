@@ -149,13 +149,14 @@ get_drda_rigid <- function(data, response_col="response"){
   },
   warning = function(w){
     if(grepl("issues while computing", w$message)){
-      rlang::warn("trouble fitting one or more models")
-      return(get_drda_helper(data, response_col))
+      rlang::warn("Unable to fit model. Returning NA")
+      return(NA)
     }
   },
   error = function(e){
     if(grepl("system is computationally singular", e$message)){
-      stop("Unable to fit model. Data may be noisy or out of parameter bounds")
+      rlang::warn("Unable to fit model. Returning NA")
+      return(NA)
     }
   })
 }
