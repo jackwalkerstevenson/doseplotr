@@ -105,12 +105,12 @@ save_plot <- function(plot, filename,
   text_factor <- font_base_size / 120 # approx width per character of longest legend text
   # if legend length is not provided, take a wild guess
   if(is.null(legend_len)) legend_len <- 15
-    # if width is not provided, calculate width from length of legend text
-    if(is.null(width)){
-      if(legend){
-        width <- ncol * base_width + legend_pad + legend_len * text_factor}
-      else{width <- ncol * base_width}
-    }
+  # if width is not provided, calculate width from length of legend text
+  if(is.null(width)){
+    if(legend){
+      width <- ncol * base_width + legend_pad + legend_len * text_factor}
+    else{width <- ncol * base_width}
+  }
   if(is.null(height)){
     height <- nrow * base_height
   }
