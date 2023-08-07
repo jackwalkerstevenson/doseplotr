@@ -55,11 +55,11 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                         width = .data$w)) +
     # ggprism guide to end at last tick
     ggplot2::scale_x_continuous(guide = ggprism::guide_prism_offset_minor(),
-                       breaks = scales::breaks_width(1),
-                       minor_breaks = minor_x) +
+                                breaks = scales::breaks_width(1),
+                                minor_breaks = minor_x) +
     # ggprism guide to end at last tick
     ggplot2::scale_y_continuous(guide = ggprism::guide_prism_offset(),
-                       breaks = c(0,25,50,75,100)) + # y axis ticks 0 to 100
+                                breaks = c(0,25,50,75,100)) + # y axis ticks 0 to 100
     ggplot2::coord_cartesian(xlim = x_limits, ylim = c(0,NA)) + # y 0 to max
     ggprism::theme_prism(base_size = font_base_size) + # prism theme
     ggplot2::theme(plot.background = ggplot2::element_blank()) + # transparent
