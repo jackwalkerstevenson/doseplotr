@@ -123,9 +123,13 @@ save_plot <- function(plot, filename,
 #' * log_dose
 #' * response column, specified in response_col argument
 #' @param trt Name of treatment to plot
+#' @param color_map Optional vector of color specifiers (named vector is
+#'   recommended) for manually specifying colors. If not provided,
+#'   `viridis_range()` and `viridis::scale_color_viridis()` will be used to
+#'   determine colors.
+#' @param response_col Name of column containing response data
 #' @param rigid Whether to set rigid value for low-dose asymptote. 100 if
 #'   decreasing, 0 if increasing.
-#' @param response_col Name of column containing response data
 #' @param x_limits Limits for x axis of plot. Optional: if not provided, will be
 #'   calculated automatically.
 #' @param ... Extra parameters to pass to `base_dose_response()`
@@ -135,6 +139,7 @@ save_plot <- function(plot, filename,
 #' @export
 plot_treatment <- function(df, trt,
                            response_col = "response",
+                           color_map = NULL,
                            rigid = FALSE,
                            x_limits = NULL,
                            ...){
@@ -166,8 +171,12 @@ plot_treatment <- function(df, trt,
                                      y = .data$mean_response,
                                      color = .data$target)) +
       ggplot2::geom_point(ggplot2::aes(shape = .data$target), size = 3) +
-      viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
-                                   begin = vr_begin, end = vr_end) +
+      {if(is.null(color_map)){ # optionally manually specify colors
+        viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
+                                     begin = vr_begin, end = vr_end)
+      } else{
+        ggplot2::scale_color_manual(values = color_map)
+      }} +
       ggplot2::labs(title = trt)
   } |>
     base_dose_response(x_limits = x_limits, ...)
@@ -185,6 +194,7 @@ plot_treatment <- function(df, trt,
 #' @export
 plot_target <- function(df, tgt,
                         response_col = "response",
+                        color_map = NULL,
                         rigid = FALSE,
                         x_limits = NULL,
                         ...){
@@ -214,10 +224,15 @@ plot_target <- function(df, tgt,
   p <- {ggplot2::ggplot(data_summary,
                         ggplot2::aes(x = .data$log_dose,
                                      y = .data$mean_response,
+                                     shape = .data$treatment,
                                      color = .data$treatment)) +
-      ggplot2::geom_point(ggplot2::aes(shape = .data$treatment), size = 3) +
-      viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
-                                   begin = vr_begin, end = vr_end) +
+      ggplot2::geom_point(size = 3) +
+      {if(is.null(color_map)){ # optionally manually specify colors
+        viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
+                                     begin = vr_begin, end = vr_end)
+      } else{
+        ggplot2::scale_color_manual(values = color_map)
+      }} +
       ggplot2::labs(title = tgt)
   } |>
     base_dose_response(x_limits = x_limits, ...)

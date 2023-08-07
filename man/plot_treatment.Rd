@@ -7,8 +7,9 @@
 plot_treatment(
   df,
   trt,
-  rigid = FALSE,
   response_col = "response",
+  color_map = NULL,
+  rigid = FALSE,
   x_limits = NULL,
   ...
 )
@@ -24,10 +25,15 @@ plot_treatment(
 
 \item{trt}{Name of treatment to plot}
 
+\item{response_col}{Name of column containing response data}
+
+\item{color_map}{Optional vector of color specifiers (named vector is
+recommended) for manually specifying colors. If not provided,
+\code{viridis_range()} and \code{viridis::scale_color_viridis()} will be used to
+determine colors.}
+
 \item{rigid}{Whether to set rigid value for low-dose asymptote. 100 if
 decreasing, 0 if increasing.}
-
-\item{response_col}{Name of column containing response data}
 
 \item{x_limits}{Limits for x axis of plot. Optional: if not provided, will be
 calculated automatically.}
