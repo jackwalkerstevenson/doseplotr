@@ -12,8 +12,8 @@
 summarize_response <- function(df, response_col = "response"){
   dplyr::summarize(df,
                    # standard error for error bars = standard deviation / sqrt n
-                   sem = stats::sd(.data[[response_col]],
-                            na.rm = TRUE) / sqrt(dplyr::n()),
+                   sem = stats::sd(.data[[response_col]], na.rm = TRUE) /
+                     sqrt(dplyr::n()),
                    # get mean normalized readout value for plotting
                    mean_response = mean(.data[[response_col]]),
                    w = 0.06 * dplyr::n() # for consistent error bar widths
