@@ -134,8 +134,8 @@ save_plot <- function(plot, filename,
 #'   on all targets
 #' @export
 plot_treatment <- function(df, trt,
-                           rigid = FALSE,
                            response_col = "response",
+                           rigid = FALSE,
                            x_limits = NULL,
                            ...){
   # get data for specified treatment
@@ -180,15 +180,14 @@ plot_treatment <- function(df, trt,
 #' Plot dose-response effects of one target on all treatments
 #' @inheritParams plot_treatment
 #' @param tgt Name of target to plot
-#'
 #' @return A ggplot2 plot of the dose-response effect of the specified target on
 #'   all treatments
 #' @export
 plot_target <- function(df, tgt,
-                           rigid = FALSE,
-                           response_col = "response",
-                           x_limits = NULL,
-                           ...){
+                        response_col = "response",
+                        rigid = FALSE,
+                        x_limits = NULL,
+                        ...){
   # get data for specified target
   data <- df |> filter_trt_tgt(tgt = tgt)
   # calculate x limits if not specified
