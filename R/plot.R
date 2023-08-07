@@ -227,35 +227,3 @@ plot_target <- function(df, tgt,
     ggplot2::geom_line(data = model_predictions, linewidth = .75, alpha = 0.8)
   return(p)
 }
-# plot_target <- function(df, tgt,
-#                            response_col = "response",
-#                            x_limits = NULL,
-#                            ...){
-#   summary <- df |>
-#     filter_trt_tgt(tgt = tgt) |>
-#     dplyr::group_by(.data$treatment, .data$log_dose) |>
-#     summarize_response(response_col = response_col)
-#   # set up color parameters based on number of treatments
-#   num_treatments <- length(unique(summary$treatment))
-#   vr <- viridis_range(num_treatments)
-#   vr_begin <- vr[[1]]
-#   vr_end <- vr[[2]]
-#   vr_option <- vr[[3]]
-#   # calculate x limits if not specified
-#   if(is.null(x_limits)){
-#     x_min <- floor(min(summary$log_dose))
-#     x_max <- ceiling(max(summary$log_dose))
-#     x_limits <- c(x_min, x_max)
-#   }
-#   p <- {ggplot2::ggplot(summary,
-#                         ggplot2::aes(x = .data$log_dose,
-#                                      y = .data$mean_response,
-#                                      color = .data$treatment)) +
-#       ggplot2::geom_point(ggplot2::aes(shape = .data$treatment), size = 3) +
-#       viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
-#                                    begin = vr_begin, end = vr_end) +
-#       ggplot2::labs(title = tgt)
-#   } |>
-#     base_dose_response(x_limits = x_limits, ...)
-#   return(p)
-# }
