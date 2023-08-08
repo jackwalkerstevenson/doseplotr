@@ -35,3 +35,34 @@ filter_trt_tgt <- function(data, trt = NULL, tgt = NULL,
   if(nrow(data) == 0){warning("no data left after filtering")}
   return(data)
 }
+
+#' Filter, validate and reorder a dataframe column with desired values
+#'
+#' This function is intended for reconciling a column of a dataframe with an
+#' externally-provided vector of desired values for the column. It does three
+#' things:
+#' * Filter the column so it only contains the desired values
+#' * Validate that all of the desired values are actually present in the column.
+#' Throws an error if any values are missing from the column.
+#' * Reorder the column as a factor to match the order of the desired values
+#' @param df A dataframe
+#' @param colname The column to filter, validate and reorder
+#' @param values The values for which to filter, check and reorder the column
+#' @return The dataframe with the desired column filtered, validated and
+#'   reordered
+#' @export
+#' @examples
+#' example_df <- data.frame(treatment = c("foo", "foo", "foo", "bar", "baz"),
+#'                  target = c("apple", "orange", "banana", "apple", "orange"))
+#' filter_validate_reorder(example_df, "target", c("banana", "orange"))
+filter_validate_reorder <- function(df, colname, values){
+  df <- df |>
+    dplyr::filter(get({{ colname }}) %in% values) # remove extraneous values
+  data_values <- unique(df[[colname]]) # values actually in data
+  for(value in values){ # check all intended values area actually present
+    assertthat::assert_that(value %in% data_values, msg = glue::glue(
+      "value {value} was not found in the data"))}
+  df |> # set order of values in data
+    dplyr::mutate(colname =
+                    forcats::fct_relevel(.data[[colname]], values))
+}
