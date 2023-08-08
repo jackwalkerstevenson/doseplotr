@@ -86,3 +86,32 @@ minor_breaks <- function(min_val, max_val, log_units = FALSE){
 minor_breaks_log <- function(min_val, max_val){
   log10(minor_breaks(min_val, max_val, log_units = TRUE))
 }
+
+#' Get a manually-curated vector of ggplot shape IDs
+#' @return A vector of numbers intended for use in
+#'   `ggplot2::scale_shape_manual()`
+#' @export
+#' @examples
+#' shape_scale()
+shape_scale <- function(){
+  c(19, # solid circle
+    17, # solid triangle
+    15, # solid square
+    18, # solid diamond
+    1, # empty circle
+    2, # empty triangle
+    0, # empty square
+    5, # empty diamond
+    6, # empty inverted triangle
+    8, # vonnegut
+    7, # Xed square
+    9, # crossed diamond
+    4, # X
+    3, # plus
+    13, # Xed circle
+    10, # crossed circle
+    12, # crossed square
+    14, # inverted V square
+    11 # triangle plus inverted triangle
+    )
+}

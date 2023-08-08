@@ -59,8 +59,9 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                 minor_breaks = minor_x) +
     # ggprism guide to end at last tick
     ggplot2::scale_y_continuous(guide = ggprism::guide_prism_offset(),
-                                breaks = c(0,25,50,75,100)) + # y axis ticks 0 to 100
+                                breaks = c(0,25,50,75,100)) + # y ticks 0 to 100
     ggplot2::coord_cartesian(xlim = x_limits, ylim = c(0,NA)) + # y 0 to max
+    ggplot2::scale_shape_manual(values = shape_scale()) +
     ggprism::theme_prism(base_size = font_base_size) + # prism theme
     ggplot2::theme(plot.background = ggplot2::element_blank()) + # transparent
     {if(!legend) ggplot2::theme(legend.position = "none")} + # legend option
