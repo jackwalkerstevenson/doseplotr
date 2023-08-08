@@ -30,6 +30,9 @@ summarize_response <- function(df, response_col = "response"){
 #' @param ylab The label for the y axis
 #' @param legend Whether or not the plot should have a legend (default is TRUE)
 #' @param grid Whether or not the plot should have a grid (default is FALSE)
+#' @param legend_title Optional title for the legend. If not provided, will be
+#'   determined by `ggplot2::waiver()` and will be the name of the aesthetic
+#'   used for the legend.
 #' @return The plot with added objects. These are:
 #' * error bars for mean plus/minus SEM of response
 #' * prism theme
@@ -45,7 +48,8 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                xlab = "log10[treatment] (M)",
                                ylab = "% untreated response",
                                legend = TRUE,
-                               grid = FALSE){
+                               grid = FALSE,
+                               legend_title = ggplot2::waiver()){
   x_min <- x_limits[1]
   x_max <- x_limits[2]
   minor_x <- minor_breaks_log(x_min, x_max)
@@ -61,9 +65,14 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
     ggplot2::scale_y_continuous(guide = ggprism::guide_prism_offset(),
                                 breaks = c(0,25,50,75,100)) + # y ticks 0 to 100
     ggplot2::coord_cartesian(xlim = x_limits, ylim = c(0,NA)) + # y 0 to max
-    ggplot2::scale_shape_manual(values = shape_scale()) +
+    ggplot2::scale_shape_manual(values = shape_scale(),
+                                name = legend_title
+                                )  +
     ggprism::theme_prism(base_size = font_base_size) + # prism theme
-    ggplot2::theme(plot.background = ggplot2::element_blank()) + # transparent
+    ggplot2::theme(plot.background = ggplot2::element_blank(), # transparent
+                   legend.title = ggplot2::element_text(face = "plain"),
+                   legend.title.align = 0,
+                   ) +
     {if(!legend) ggplot2::theme(legend.position = "none")} + # legend option
     {if(grid) ggplot2::theme(panel.grid =
                                ggplot2::element_line(color = "black",
@@ -118,6 +127,7 @@ save_plot <- function(plot, filename,
   ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height)}
 
 #' Plot dose-response effects of one treatment on all targets
+#' @inheritParams base_dose_response
 #' @param df Dataframe containing data to plot. Must contain columns:
 #' * treatment
 #' * target
@@ -143,6 +153,7 @@ plot_treatment <- function(df, trt,
                            color_map = NULL,
                            rigid = FALSE,
                            x_limits = NULL,
+                           legend_title = ggplot2::waiver(),
                            ...){
   # get data for specified treatment
   data <- df |> filter_trt_tgt(trt = trt)
@@ -174,13 +185,15 @@ plot_treatment <- function(df, trt,
       ggplot2::geom_point(ggplot2::aes(shape = .data$target), size = 3) +
       {if(is.null(color_map)){ # optionally manually specify colors
         viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
-                                     begin = vr_begin, end = vr_end)
+                                     begin = vr_begin, end = vr_end,
+                                     name = legend_title)
       } else{
-        ggplot2::scale_color_manual(values = color_map)
+        ggplot2::scale_color_manual(values = color_map,
+                                    name = legend_title)
       }} +
       ggplot2::labs(title = trt)
   } |>
-    base_dose_response(x_limits = x_limits, ...)
+    base_dose_response(x_limits = x_limits, legend_title = legend_title, ...)
   # plot model predictions for models that were fit successfully
   p <- p +
     ggplot2::geom_line(data = model_predictions, linewidth = .75, alpha = 0.8)
@@ -198,6 +211,7 @@ plot_target <- function(df, tgt,
                         color_map = NULL,
                         rigid = FALSE,
                         x_limits = NULL,
+                        legend_title = ggplot2::waiver(),
                         ...){
   # get data for specified target
   data <- df |> filter_trt_tgt(tgt = tgt)
@@ -230,13 +244,14 @@ plot_target <- function(df, tgt,
       ggplot2::geom_point(size = 3) +
       {if(is.null(color_map)){ # optionally manually specify colors
         viridis::scale_color_viridis(discrete = TRUE, option = vr_option,
-                                     begin = vr_begin, end = vr_end)
+                                     begin = vr_begin, end = vr_end,
+                                     name = legend_title)
       } else{
-        ggplot2::scale_color_manual(values = color_map)
+        ggplot2::scale_color_manual(values = color_map, name = legend_title)
       }} +
       ggplot2::labs(title = tgt)
   } |>
-    base_dose_response(x_limits = x_limits, ...)
+    base_dose_response(x_limits = x_limits, legend_title = legend_title, ...)
   # plot model predictions for models that were fit successfully
   p <- p +
     ggplot2::geom_line(data = model_predictions, linewidth = .75, alpha = 0.8)

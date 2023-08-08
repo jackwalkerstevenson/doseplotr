@@ -11,6 +11,7 @@ plot_target(
   color_map = NULL,
   rigid = FALSE,
   x_limits = NULL,
+  legend_title = ggplot2::waiver(),
   ...
 )
 }
@@ -37,6 +38,10 @@ decreasing, 0 if increasing.}
 
 \item{x_limits}{Limits for x axis of plot. Optional: if not provided, will be
 calculated automatically.}
+
+\item{legend_title}{Optional title for the legend. If not provided, will be
+determined by \code{ggplot2::waiver()} and will be the name of the aesthetic
+used for the legend.}
 
 \item{...}{Extra parameters to pass to \code{base_dose_response()}}
 }
