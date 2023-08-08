@@ -63,6 +63,6 @@ filter_validate_reorder <- function(df, colname, values){
     assertthat::assert_that(value %in% data_values, msg = glue::glue(
       "value {value} was not found in the data"))}
   df |> # set order of values in data
-    dplyr::mutate(colname =
+    dplyr::mutate({{colname}} :=
                     forcats::fct_relevel(.data[[colname]], values))
 }
