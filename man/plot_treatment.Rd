@@ -12,6 +12,7 @@ plot_treatment(
   rigid = FALSE,
   x_limits = NULL,
   legend_title = ggplot2::waiver(),
+  legend_labels = ggplot2::waiver(),
   ...
 )
 }
@@ -40,8 +41,12 @@ decreasing, 0 if increasing.}
 calculated automatically.}
 
 \item{legend_title}{Optional title for the legend. If not provided, will be
-determined by \code{ggplot2::waiver()} and will be the name of the aesthetic
-used for the legend.}
+determined by \code{ggplot2::waiver()} and will be the name of the aesthetic used
+for the legend.}
+
+\item{legend_labels}{Optional named vector to manually set legend labels. If
+not provided, will be determined by \code{ggplot2::waiver()} and will be the
+names of the groups in the data.}
 
 \item{...}{Extra parameters to pass to \code{base_dose_response()}}
 }

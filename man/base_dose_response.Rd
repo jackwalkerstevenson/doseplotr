@@ -12,7 +12,8 @@ base_dose_response(
   ylab = "\% untreated response",
   legend = TRUE,
   grid = FALSE,
-  legend_title = ggplot2::waiver()
+  legend_title = ggplot2::waiver(),
+  legend_labels = ggplot2::waiver()
 )
 }
 \arguments{
@@ -31,8 +32,12 @@ base_dose_response(
 \item{grid}{Whether or not the plot should have a grid (default is FALSE)}
 
 \item{legend_title}{Optional title for the legend. If not provided, will be
-determined by \code{ggplot2::waiver()} and will be the name of the aesthetic
-used for the legend.}
+determined by \code{ggplot2::waiver()} and will be the name of the aesthetic used
+for the legend.}
+
+\item{legend_labels}{Optional named vector to manually set legend labels. If
+not provided, will be determined by \code{ggplot2::waiver()} and will be the
+names of the groups in the data.}
 }
 \value{
 The plot with added objects. These are:
