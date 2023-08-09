@@ -103,14 +103,14 @@ shape_scale <- function(){
     0, # empty square
     5, # empty diamond
     6, # empty inverted triangle
+    4, # X
     8, # vonnegut
     7, # Xed square
     9, # crossed diamond
-    4, # X
-    3, # plus
     13, # Xed circle
     10, # crossed circle
     12, # crossed square
+    3, # plus
     14, # inverted V square
     11 # triangle plus inverted triangle
     )
