@@ -41,8 +41,8 @@ decreasing, 0 if increasing.}
 calculated automatically.}
 
 \item{legend_title}{Optional title for the legend. If not provided, will be
-determined by \code{ggplot2::waiver()} and will be the name of the aesthetic used
-for the legend.}
+determined by \code{ggplot2::waiver()} and will be the name of the aesthetic
+used for the legend.}
 
 \item{legend_labels}{Optional named vector to manually set legend labels. If
 not provided, will be determined by \code{ggplot2::waiver()} and will be the

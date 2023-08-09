@@ -19,39 +19,42 @@ summarize_response <- function(df, response_col = "response"){
                    w = 0.06 * dplyr::n() # for consistent error bar widths
   )}
 
-#'Add ggplot objects common to all dose-response plots
+#' Add ggplot objects common to all dose-response plots
 #'
-#'`base_dose_response()` is a helper function that adds the ggplot objects
-#'common to doseplotr dose-response plots.
-#'@param plot ggplot2 plot to which to add objects
-#'@param x_limits Limits of the x axis. Vector of form c(start, end)
-#'@param font_base_size Font size in points. Default is 14 from theme_prism
-#'@param xlab The label for the x axis
-#'@param ylab The label for the y axis
-#'@param legend Whether or not the plot should have a legend (default is TRUE)
-#'@param grid Whether or not the plot should have a grid (default is FALSE)
-#'@param legend_title Optional title for the legend. If not provided, will be
-#'  determined by `ggplot2::waiver()` and will be the name of the aesthetic used
-#'  for the legend.
-#'@param legend_labels Optional named vector to manually set legend labels. If
-#'  not provided, will be determined by `ggplot2::waiver()` and will be the
-#'  names of the groups in the data.
-#'@return The plot with added objects. These are:
-#' * error bars for mean plus/minus SEM of response
-#' * prism theme
-#' * x axis scale with major breaks at log10 intervals and logistic minor breaks
-#' * y axis scale with zoom from 0 to max and manual 25% breaks
-#' * transparent background
-#' * optional removed legend
-#' * optional major and minor grid
-#' * x and y labels from arguments
-#'@importFrom ggprism guide_prism_offset_minor
-#'@export
+#' `base_dose_response()` is a helper function that adds the ggplot objects
+#' common to doseplotr dose-response plots.
+#' @param plot ggplot2 plot to which to add objects
+#' @param x_limits Limits of the x axis. Vector of form c(start, end)
+#' @param font_base_size Font size in points. Default is 14 from theme_prism
+#' @param xlab The label for the x axis
+#' @param ylab The label for the y axis
+#' @param legend Whether or not the plot should have a legend (default is TRUE)
+#' @param grid Whether or not the plot should have a grid (default is FALSE)
+#' @param plot_title Optional title for the plot. If not provided, will be determined
+#'   by `ggplot2::waiver()`.
+#' @param legend_title Optional title for the legend. If not provided, will be
+#'   determined by `ggplot2::waiver()` and will be the name of the aesthetic
+#'   used for the legend.
+#' @param legend_labels Optional named vector to manually set legend labels. If
+#'   not provided, will be determined by `ggplot2::waiver()` and will be the
+#'   names of the groups in the data.
+#' @return The plot with added objects. These are:
+#'  * error bars for mean plus/minus SEM of response
+#'  * prism theme
+#'  * x axis scale with major breaks at log10 intervals and logistic minor breaks
+#'  * y axis scale with zoom from 0 to max and manual 25% breaks
+#'  * transparent background
+#'  * optional removed legend
+#'  * optional major and minor grid
+#'  * x and y labels from arguments
+#' @importFrom ggprism guide_prism_offset_minor
+#' @export
 base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                xlab = "log10[treatment] (M)",
                                ylab = "% untreated response",
                                legend = TRUE,
                                grid = FALSE,
+                               plot_title = ggplot2::waiver(),
                                legend_title = ggplot2::waiver(),
                                legend_labels = ggplot2::waiver()){
   x_min <- x_limits[1]
@@ -71,13 +74,11 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
     ggplot2::coord_cartesian(xlim = x_limits, ylim = c(0,NA)) + # y 0 to max
     ggplot2::scale_shape_manual(values = shape_scale(),
                                 name = legend_title,
-                                labels = legend_labels
-                                )  +
+                                labels = legend_labels) +
     ggprism::theme_prism(base_size = font_base_size) + # prism theme
     ggplot2::theme(plot.background = ggplot2::element_blank(), # transparent
                    legend.title = ggplot2::element_text(face = "plain"),
-                   legend.title.align = 0,
-                   ) +
+                   legend.title.align = 0) +
     {if(!legend) ggplot2::theme(legend.position = "none")} + # legend option
     {if(grid) ggplot2::theme(panel.grid =
                                ggplot2::element_line(color = "black",
@@ -86,7 +87,7 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                ggplot2::element_line(color = "black",
                                                      linewidth = 0.1,
                                                      linetype = "dotted"))} +
-    ggplot2::labs(x = xlab, y = ylab)
+    ggplot2::labs(x = xlab, y = ylab, title = plot_title)
   return(p)
 }
 
@@ -198,8 +199,8 @@ plot_treatment <- function(df, trt,
         ggplot2::scale_color_manual(values = color_map,
                                     name = legend_title,
                                     labels = legend_labels)
-      }} +
-      ggplot2::labs(title = trt)
+      }} #+
+      # ggplot2::labs(title = trt)
   } |>
     base_dose_response(x_limits = x_limits,
                        legend_title = legend_title,
@@ -263,8 +264,8 @@ plot_target <- function(df, tgt,
         ggplot2::scale_color_manual(values = color_map,
                                     name = legend_title,
                                     labels = legend_labels)
-      }} +
-      ggplot2::labs(title = tgt)
+      }} #+
+      # ggplot2::labs(title = tgt)
   } |>
     base_dose_response(x_limits = x_limits,
                        legend_title = legend_title,
