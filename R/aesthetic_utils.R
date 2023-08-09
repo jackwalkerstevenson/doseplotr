@@ -87,9 +87,9 @@ minor_breaks_log <- function(min_val, max_val){
   log10(minor_breaks(min_val, max_val, log_units = TRUE))
 }
 
-#' Get a manually-curated vector of ggplot shape IDs
-#' @return A vector of numbers intended for use in
-#'   `ggplot2::scale_shape_manual()`
+#' Get a manually-curated general-purpose shape scale for ggplot
+#' @return A vector of numbers corresponding to shapes intended for use in
+#'   `ggplot2::scale_shape_manual()` for general-purpose shape scales
 #' @export
 #' @examples
 #' shape_scale()
