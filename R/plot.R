@@ -19,6 +19,45 @@ summarize_response <- function(df, response_col = "response"){
                    w = 0.06 * dplyr::n() # for consistent error bar widths
   )}
 
+#' Save a plot as an image with predictable plot dimensions
+#'
+#' `save_plot()` takes a ggplot2 object and saves it as an image.
+#' [ggplot2::ggsave()] allows the dimensions of the output image to be specified
+#' but does not offer logic to make the actual plot portion of the image a
+#' constant size. `save_plot()` tries to set the exported image dimensions such
+#' that the plot portion of the image is a similar size across exports, even
+#' when plots have legends of different sizes, using parameters empirically
+#' optimized for dose-response curve plots.
+#' @inheritParams base_dose_response
+#' @param plot A ggplot2 object
+#' @param filename Path to the file to be saved
+#' @param legend_len Length of the longest piece of text in the legend
+#' @param nrow Number of rows of facets in the plot
+#' @param ncol Number of columns of facets in the plot
+#' @param width Width of the image to be saved
+#' @param height Height of the image to be saved
+#' @export
+save_plot <- function(plot, filename,
+                      no_legend = FALSE, legend_len = NULL, font_base_size = 14,
+                      nrow = 1, ncol = 1,
+                      width = NULL, height = NULL){
+  base_width <- 4.5 # base measurement of width before legend
+  base_height <- 4 # base measurement of height before legend
+  legend_pad <- 0.3 # extra width for legend icon
+  text_factor <- font_base_size / 120 # approx width per character of longest legend text
+  # if legend length is not provided, take a wild guess
+  if(is.null(legend_len)) legend_len <- 15
+  # if width is not provided, calculate width from length of legend text
+  if(is.null(width)){
+    if(!no_legend){
+      width <- ncol * base_width + legend_pad + legend_len * text_factor}
+    else{width <- ncol * base_width}
+  }
+  if(is.null(height)){
+    height <- nrow * base_height
+  }
+  ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height)}
+
 #' Add ggplot objects common to all dose-response plots
 #'
 #' `base_dose_response()` is a helper function that adds the ggplot objects
@@ -28,16 +67,19 @@ summarize_response <- function(df, response_col = "response"){
 #' @param font_base_size Font size in points. Default is 14 from theme_prism
 #' @param xlab The label for the x axis
 #' @param ylab The label for the y axis
-#' @param legend Whether or not the plot should have a legend (default is TRUE)
+#' @param no_legend Whether to plot without a legend (default is FALSE)
 #' @param grid Whether or not the plot should have a grid (default is FALSE)
-#' @param plot_title Optional title for the plot. If not provided, will be determined
-#'   by `ggplot2::waiver()`.
+#' @param plot_title Optional title for the plot. If not provided, will be
+#'   determined by `ggplot2::waiver()`.
 #' @param legend_title Optional title for the legend. If not provided, will be
 #'   determined by `ggplot2::waiver()` and will be the name of the aesthetic
 #'   used for the legend.
 #' @param legend_labels Optional named vector to manually set legend labels. If
 #'   not provided, will be determined by `ggplot2::waiver()` and will be the
 #'   names of the groups in the data.
+#' @param shape_map Optional vector of shape specifiers (named vector is
+#'   recommended) for manually specifying colors. If not provided,
+#'   `scale_shape()` will be used to determine colors.
 #' @return The plot with added objects. These are:
 #'  * error bars for mean plus/minus SEM of response
 #'  * prism theme
@@ -52,14 +94,12 @@ summarize_response <- function(df, response_col = "response"){
 base_dose_response <- function(plot, x_limits, font_base_size = 14,
                                xlab = "log10[treatment] (M)",
                                ylab = "% untreated response",
-                               legend = TRUE,
+                               no_legend = FALSE,
                                grid = FALSE,
                                plot_title = ggplot2::waiver(),
                                legend_title = ggplot2::waiver(),
-                               legend_labels = ggplot2::waiver()){
-  x_min <- x_limits[1]
-  x_max <- x_limits[2]
-  minor_x <- minor_breaks_log(x_min, x_max)
+                               legend_labels = ggplot2::waiver(),
+                               shape_map = shape_scale_default()){
   p <- plot +
     ggplot2::geom_errorbar(ggplot2::aes(ymax = .data$mean_response + .data$sem,
                                         ymin = .data$mean_response - .data$sem,
@@ -67,19 +107,20 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
     # ggprism guide to end at last tick
     ggplot2::scale_x_continuous(guide = ggprism::guide_prism_offset_minor(),
                                 breaks = scales::breaks_width(1),
-                                minor_breaks = minor_x) +
+                                minor_breaks = minor_breaks_log(x_limits[1],
+                                                                x_limits[2])) +
     # ggprism guide to end at last tick
     ggplot2::scale_y_continuous(guide = ggprism::guide_prism_offset(),
                                 breaks = c(0,25,50,75,100)) + # y ticks 0 to 100
     ggplot2::coord_cartesian(xlim = x_limits, ylim = c(0,NA)) + # y 0 to max
-    ggplot2::scale_shape_manual(values = shape_scale(),
+    ggplot2::scale_shape_manual(values = shape_map,
                                 name = legend_title,
                                 labels = legend_labels) +
     ggprism::theme_prism(base_size = font_base_size) + # prism theme
     ggplot2::theme(plot.background = ggplot2::element_blank(), # transparent
                    legend.title = ggplot2::element_text(face = "plain"),
                    legend.title.align = 0) +
-    {if(!legend) ggplot2::theme(legend.position = "none")} + # legend option
+    {if(no_legend) ggplot2::theme(legend.position = "none")} + # legend option
     {if(grid) ggplot2::theme(panel.grid =
                                ggplot2::element_line(color = "black",
                                                      linewidth = 0.2),
@@ -91,47 +132,6 @@ base_dose_response <- function(plot, x_limits, font_base_size = 14,
   return(p)
 }
 
-#' Save a plot as an image with predictable plot dimensions
-#'
-#' `save_plot()` takes a ggplot2 object and saves it as an image.
-#' [ggplot2::ggsave()] allows the dimensions of the output image to be specified
-#' but does not offer logic to make the actual plot portion of the image a
-#' constant size. `save_plot()` tries to set the exported image dimensions such
-#' that the plot portion of the image is a similar size across exports, even
-#' when plots have legends of different sizes, using parameters empirically
-#' optimized for dose-response curve plots.
-#' @inheritParams base_dose_response
-#' @param plot A ggplot2 object
-#' @param filename Path to the file to be saved
-#' @param legend_len Length of the longest piece of text in the legend
-#' @param font_base_size Size (point units) of font in plots. 14 is theme_prism
-#'   default
-#' @param nrow Number of rows of facets in the plot
-#' @param ncol Number of columns of facets in the plot
-#' @param width Width of the image to be saved
-#' @param height Height of the image to be saved
-#' @export
-save_plot <- function(plot, filename,
-                      legend = TRUE, legend_len = NULL, font_base_size = 14,
-                      nrow = 1, ncol = 1,
-                      width = NULL, height = NULL){
-  base_width <- 4.5 # base measurement of width before legend
-  base_height <- 4 # base measurement of height before legend
-  legend_pad <- 0.3 # extra width for legend icon
-  text_factor <- font_base_size / 120 # approx width per character of longest legend text
-  # if legend length is not provided, take a wild guess
-  if(is.null(legend_len)) legend_len <- 15
-  # if width is not provided, calculate width from length of legend text
-  if(is.null(width)){
-    if(legend){
-      width <- ncol * base_width + legend_pad + legend_len * text_factor}
-    else{width <- ncol * base_width}
-  }
-  if(is.null(height)){
-    height <- nrow * base_height
-  }
-  ggplot2::ggsave(filename, plot, bg = "transparent", width = width, height = height)}
-
 #' Plot dose-response effects of one treatment on all targets
 #' @inheritParams base_dose_response
 #' @param df Dataframe containing data to plot. Must contain columns:
@@ -140,15 +140,15 @@ save_plot <- function(plot, filename,
 #' * log_dose
 #' * response column, specified in response_col argument
 #' @param trt Name of treatment to plot
-#' @param color_map Optional vector of color specifiers (named vector is
-#'   recommended) for manually specifying colors. If not provided,
-#'   `viridis_range()` and `viridis::scale_color_viridis()` will be used to
-#'   determine colors.
 #' @param response_col Name of column containing response data
 #' @param rigid Whether to set rigid value for low-dose asymptote. 100 if
 #'   decreasing, 0 if increasing.
 #' @param x_limits Limits for x axis of plot. Optional: if not provided, will be
 #'   calculated automatically.
+#' @param color_map Optional vector of color specifiers (named vector is
+#'   recommended) for manually specifying colors. If not provided,
+#'   `viridis_range()` and `viridis::scale_color_viridis()` will be used to
+#'   determine colors.
 #' @param ... Extra parameters to pass to `base_dose_response()`
 #'
 #' @return A ggplot2 plot of the dose-response effect of the specified treatment
@@ -156,11 +156,11 @@ save_plot <- function(plot, filename,
 #' @export
 plot_treatment <- function(df, trt,
                            response_col = "response",
-                           color_map = NULL,
                            rigid = FALSE,
                            x_limits = NULL,
                            legend_title = ggplot2::waiver(),
                            legend_labels = ggplot2::waiver(),
+                           color_map = NULL,
                            ...){
   # get data for specified treatment
   data <- df |> filter_trt_tgt(trt = trt)
@@ -199,16 +199,16 @@ plot_treatment <- function(df, trt,
         ggplot2::scale_color_manual(values = color_map,
                                     name = legend_title,
                                     labels = legend_labels)
-      }} #+
-      # ggplot2::labs(title = trt)
-  } |>
+      }}} |>
     base_dose_response(x_limits = x_limits,
                        legend_title = legend_title,
                        legend_labels = legend_labels,
                        ...)
   # plot model predictions for models that were fit successfully
-  p <- p +
-    ggplot2::geom_line(data = model_predictions, linewidth = .75, alpha = 0.8)
+  if(nrow(model_predictions>0)){
+    p <- p +
+      ggplot2::geom_line(data = model_predictions,
+                         linewidth = .75, alpha = 0.8)}
   return(p)
 }
 
@@ -264,9 +264,7 @@ plot_target <- function(df, tgt,
         ggplot2::scale_color_manual(values = color_map,
                                     name = legend_title,
                                     labels = legend_labels)
-      }} #+
-      # ggplot2::labs(title = tgt)
-  } |>
+      }}} |>
     base_dose_response(x_limits = x_limits,
                        legend_title = legend_title,
                        legend_labels = legend_labels,

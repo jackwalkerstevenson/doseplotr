@@ -7,7 +7,7 @@
 save_plot(
   plot,
   filename,
-  legend = TRUE,
+  no_legend = FALSE,
   legend_len = NULL,
   font_base_size = 14,
   nrow = 1,
@@ -21,12 +21,11 @@ save_plot(
 
 \item{filename}{Path to the file to be saved}
 
-\item{legend}{Whether or not the plot should have a legend (default is TRUE)}
+\item{no_legend}{Whether to plot without a legend (default is FALSE)}
 
 \item{legend_len}{Length of the longest piece of text in the legend}
 
-\item{font_base_size}{Size (point units) of font in plots. 14 is theme_prism
-default}
+\item{font_base_size}{Font size in points. Default is 14 from theme_prism}
 
 \item{nrow}{Number of rows of facets in the plot}
 

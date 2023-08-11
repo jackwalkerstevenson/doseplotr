@@ -10,11 +10,12 @@ base_dose_response(
   font_base_size = 14,
   xlab = "log10[treatment] (M)",
   ylab = "\% untreated response",
-  legend = TRUE,
+  no_legend = FALSE,
   grid = FALSE,
   plot_title = ggplot2::waiver(),
   legend_title = ggplot2::waiver(),
-  legend_labels = ggplot2::waiver()
+  legend_labels = ggplot2::waiver(),
+  shape_map = shape_scale_default()
 )
 }
 \arguments{
@@ -28,12 +29,12 @@ base_dose_response(
 
 \item{ylab}{The label for the y axis}
 
-\item{legend}{Whether or not the plot should have a legend (default is TRUE)}
+\item{no_legend}{Whether to plot without a legend (default is FALSE)}
 
 \item{grid}{Whether or not the plot should have a grid (default is FALSE)}
 
-\item{plot_title}{Optional title for the plot. If not provided, will be determined
-by \code{ggplot2::waiver()}.}
+\item{plot_title}{Optional title for the plot. If not provided, will be
+determined by \code{ggplot2::waiver()}.}
 
 \item{legend_title}{Optional title for the legend. If not provided, will be
 determined by \code{ggplot2::waiver()} and will be the name of the aesthetic
@@ -42,6 +43,10 @@ used for the legend.}
 \item{legend_labels}{Optional named vector to manually set legend labels. If
 not provided, will be determined by \code{ggplot2::waiver()} and will be the
 names of the groups in the data.}
+
+\item{shape_map}{Optional vector of shape specifiers (named vector is
+recommended) for manually specifying colors. If not provided,
+\code{scale_shape()} will be used to determine colors.}
 }
 \value{
 The plot with added objects. These are:

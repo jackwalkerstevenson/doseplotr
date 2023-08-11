@@ -8,11 +8,11 @@ plot_treatment(
   df,
   trt,
   response_col = "response",
-  color_map = NULL,
   rigid = FALSE,
   x_limits = NULL,
   legend_title = ggplot2::waiver(),
   legend_labels = ggplot2::waiver(),
+  color_map = NULL,
   ...
 )
 }
@@ -29,11 +29,6 @@ plot_treatment(
 
 \item{response_col}{Name of column containing response data}
 
-\item{color_map}{Optional vector of color specifiers (named vector is
-recommended) for manually specifying colors. If not provided,
-\code{viridis_range()} and \code{viridis::scale_color_viridis()} will be used to
-determine colors.}
-
 \item{rigid}{Whether to set rigid value for low-dose asymptote. 100 if
 decreasing, 0 if increasing.}
 
@@ -47,6 +42,11 @@ used for the legend.}
 \item{legend_labels}{Optional named vector to manually set legend labels. If
 not provided, will be determined by \code{ggplot2::waiver()} and will be the
 names of the groups in the data.}
+
+\item{color_map}{Optional vector of color specifiers (named vector is
+recommended) for manually specifying colors. If not provided,
+\code{viridis_range()} and \code{viridis::scale_color_viridis()} will be used to
+determine colors.}
 
 \item{...}{Extra parameters to pass to \code{base_dose_response()}}
 }
