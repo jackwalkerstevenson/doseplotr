@@ -1,3 +1,34 @@
+#' Get a variable if a boolean is TRUE, or else a backup option
+#' @param var Variable to return if `bool` is TRUE
+#' @param bool Whether to return `var` or `otherwise`
+#' @param otherwise What to return if `bool` is FALSE. Default is NULL.
+#' @return `var`, if `bool` is TRUE, else `otherwise`
+#' @export
+get_if <- function(var, bool, otherwise = NULL){
+  if(bool) var else otherwise}
+
+#' Get the value of a name in a named vector if present and desired
+#'
+#' This function is intended for setting the "display name" of a group in a plot
+#' from its "data name", its name in the underlying dataframe.
+#' @param name The data name to be renamed
+#' @param display_names Named vector of the form c("data name" = "display name")
+#' @param rename Whether to seek to rename at all. This argument is intended for
+#'   use with a global parameter that determines whether display names will be
+#'   applied across all plots.
+#' @return The name to use for the group in the plot. Will be either the
+#'   original name or a new display name depending on arguments.
+#' @export
+#' @examples
+#' example_names <- c("foo" = "Display Name for Foo",
+#'                    "bar" = "Display Name for Bar")
+#' get_display_name("foo", example_names, TRUE)
+#' get_display_name("foo", example_names, FALSE)
+#' get_display_name("baz", example_names, TRUE)
+get_display_name <- function(name, display_names, rename){
+  if(rename & name %in% names(display_names)) display_names[name] else name
+}
+
 #' Convert concentration from log(molar) to nanomolar units
 #'
 #' @param conc_logmolar Concentration in log(molar) units
