@@ -92,8 +92,8 @@ minor_breaks_log <- function(min_val, max_val){
 #'   `ggplot2::scale_shape_manual()` for general-purpose shape scales
 #' @export
 #' @examples
-#' shape_scale()
-shape_scale <- function(){
+#' shape_scale_default()
+shape_scale_default <- function(){
   c(19, # solid circle
     17, # solid triangle
     15, # solid square
