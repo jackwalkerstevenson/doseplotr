@@ -1,19 +1,22 @@
 #' Create a log_dose column from dose_uM or dose_nM columns
 #'
 #' `make_log_dose()` takes a dataframe that contains a column called "dose_uM"
-#' or "dose_nM" and creates a column called log_dose" from
+#' or "dose_nM" and creates a column called log_dose". If such a column is
+#' already present, it does nothing.
 #' @param df A dataframe containing either a column called "dose_nM" or a column
 #'   called "dose_uM", representing dose in nanomolar or micromolar units
 #'   respectively.
 #'
 #' @return The same dataframe with an additional column "log_dose" representing
-#'   dose in log10(molar) units.
+#'   dose in log10(molar) units, or just the original dataframe if "log_dose" is
+#'   already present.
 #' @export
 #' @examples
 #' df <- data.frame("treatment" = c("foo", "bar", "baz"),
 #'                  "dose_nM" = c(1, 10, 100))
 #' make_log_dose(df)
 make_log_dose <- function(df){
+  if("log_dose" %in% colnames(df)) return(df)
   tryCatch({ # try to convert from dose_uM
     df |> dplyr::mutate(log_dose = log10(.data$dose_uM/1e6))},
     error = function(e){ # if no dose_uM, try to convert from dose_nM
@@ -30,21 +33,23 @@ make_log_dose <- function(df){
 #'
 #' Data from each treatment/target combination is normalized to the average of
 #' the control data points for that treatment/target combination, which are
-#' indicated by a dose of 0. This function assumes that each treatment
-#' has its own control data and does not support sharing control data points
-#' between treatments. Throws an error if any condition has no controls.
+#' indicated by a dose of 0. This function assumes that each treatment has its
+#' own control data and does not support sharing control data points between
+#' treatments. Throws an error if any condition has no controls.
 #' @param df A dataframe containing dose-response data. Should contain the
 #'   following columns:
 #'  - "treatment", the condition being dosed
 #'  - "target", the target of the treatment, e.g. a cell line
 #'  - "log_dose", the dose of the treatment in log10(molar) units. Should
-#'   include control data for 0 dose (-Inf in log(molar) units) for
-#'   each treatment condition.
+#'   include control data for 0 dose (-Inf in log(molar) units) for each
+#'   treatment condition.
 #'  - "response", the response observed at the given dose.
 #' @return The input dataframe with the addition of a new column of normalized
-#'   data. The name of the new column is "response_norm".
+#'   data. The name of the new column is "response_norm". If a column called
+#'   "response_norm" already exists, the original dataframe is returned.
 #' @export
 normalize_dose_response <- function(df){
+  if("response_norm" %in% colnames(df)) return(df)
   # list every combo of treatment and target for which there are any values
   all_conditions <- df |>
     dplyr::group_by(.data[["treatment"]], .data[["target"]]) |>

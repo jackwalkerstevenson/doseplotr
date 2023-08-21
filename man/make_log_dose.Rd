@@ -13,11 +13,13 @@ respectively.}
 }
 \value{
 The same dataframe with an additional column "log_dose" representing
-dose in log10(molar) units.
+dose in log10(molar) units, or just the original dataframe if "log_dose" is
+already present.
 }
 \description{
 \code{make_log_dose()} takes a dataframe that contains a column called "dose_uM"
-or "dose_nM" and creates a column called log_dose" from
+or "dose_nM" and creates a column called log_dose". If such a column is
+already present, it does nothing.
 }
 \examples{
 df <- data.frame("treatment" = c("foo", "bar", "baz"),

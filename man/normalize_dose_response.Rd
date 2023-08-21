@@ -13,14 +13,15 @@ following columns:
 \item "treatment", the condition being dosed
 \item "target", the target of the treatment, e.g. a cell line
 \item "log_dose", the dose of the treatment in log10(molar) units. Should
-include control data for 0 dose (-Inf in log(molar) units) for
-each treatment condition.
+include control data for 0 dose (-Inf in log(molar) units) for each
+treatment condition.
 \item "response", the response observed at the given dose.
 }}
 }
 \value{
 The input dataframe with the addition of a new column of normalized
-data. The name of the new column is "response_norm".
+data. The name of the new column is "response_norm". If a column called
+"response_norm" already exists, the original dataframe is returned.
 }
 \description{
 \code{normalize_dose_response()} independently normalizes each treatment/target
@@ -33,7 +34,7 @@ mean of the untreated wells of the same condition on the same plate.
 \details{
 Data from each treatment/target combination is normalized to the average of
 the control data points for that treatment/target combination, which are
-indicated by a dose of 0. This function assumes that each treatment
-has its own control data and does not support sharing control data points
-between treatments. Throws an error if any condition has no controls.
+indicated by a dose of 0. This function assumes that each treatment has its
+own control data and does not support sharing control data points between
+treatments. Throws an error if any condition has no controls.
 }
