@@ -1,15 +1,15 @@
 #' Create a log_dose column from dose_uM or dose_nM columns
 #'
 #' `make_log_dose()` takes a dataframe that contains a column called "dose_uM"
-#' or "dose_nM" and creates a column called log_dose". If such a column is
-#' already present, it does nothing.
+#' or "dose_nM" or both and creates a column called log_dose". If such a column
+#' is already present, it does nothing.
 #' @param df A dataframe containing either a column called "dose_nM" or a column
 #'   called "dose_uM", representing dose in nanomolar or micromolar units
-#'   respectively.
-#'
+#'   respectively, or both.
 #' @return The same dataframe with an additional column "log_dose" representing
 #'   dose in log10(molar) units, or just the original dataframe if "log_dose" is
-#'   already present.
+#'   already present. If "dose_nM" is not present or is incomplete, data from
+#'   "dose_uM" is used to fill in.
 #' @export
 #' @examples
 #' df <- data.frame("treatment" = c("foo", "bar", "baz"),
@@ -17,11 +17,17 @@
 #' make_log_dose(df)
 make_log_dose <- function(df){
   if("log_dose" %in% colnames(df)) return(df)
-  tryCatch({ # try to convert from dose_uM
-    df |> dplyr::mutate(log_dose = log10(.data$dose_uM/1e6))},
-    error = function(e){ # if no dose_uM, try to convert from dose_nM
-      df |>  dplyr::mutate(log_dose = log10(.data$dose_nM/1e9))})}
-
+  assertthat::assert_that("dose_nM" %in% colnames(df) |
+                            "dose_uM" %in% colnames(df),
+                          msg = "Dose column not found in data")
+  # if dose_uM is present, convert uM to nM, then combine with nM
+  if("dose_uM" %in% colnames(df)){
+    df <- df |> dplyr::mutate(dose_nM_from_uM = .data$dose_uM*1e3,
+                              dose_nM = dplyr::coalesce(.data$dose_nM, .data$dose_nM_from_uM))
+  }
+  df |> dplyr::mutate(log_dose = log10(.data$dose_nM/1e9)) |>
+    dplyr::select(-dplyr::any_of("dose_nM_from_uM"))
+}
 #' Normalize dose-response data to 0-dose conditions
 #'
 #' `normalize_dose_response()` independently normalizes each treatment/target

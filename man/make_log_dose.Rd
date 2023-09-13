@@ -9,17 +9,18 @@ make_log_dose(df)
 \arguments{
 \item{df}{A dataframe containing either a column called "dose_nM" or a column
 called "dose_uM", representing dose in nanomolar or micromolar units
-respectively.}
+respectively, or both.}
 }
 \value{
 The same dataframe with an additional column "log_dose" representing
 dose in log10(molar) units, or just the original dataframe if "log_dose" is
-already present.
+already present. If "dose_nM" is not present or is incomplete, data from
+"dose_uM" is used to fill in.
 }
 \description{
 \code{make_log_dose()} takes a dataframe that contains a column called "dose_uM"
-or "dose_nM" and creates a column called log_dose". If such a column is
-already present, it does nothing.
+or "dose_nM" or both and creates a column called log_dose". If such a column
+is already present, it does nothing.
 }
 \examples{
 df <- data.frame("treatment" = c("foo", "bar", "baz"),
