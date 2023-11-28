@@ -25,6 +25,7 @@ Imports:
     drc,
     drda,
     forcats,
+    fs,
     ggplot2,
     ggprism,
     glue,

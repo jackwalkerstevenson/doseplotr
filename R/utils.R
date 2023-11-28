@@ -93,3 +93,24 @@ param_bounds <- function(params, lower=FALSE){
     # sorry this is a hack
     purrr::map_vec(\(x) if(lower) x - 1e-4*abs(x) else x)
 }
+
+
+#' Copy a file to a directory
+#'
+#' This method copies a file to a destination directory, optionally (default
+#' yes) adding a timestamp before the file extension.
+#'
+#' @param path_to_file Path to the file to copy.
+#' @param dest_dir Path to the directory into which to copy the file.
+#' @param timestamp Whether to insert a timestamp into the output filename
+#'   (default TRUE).
+#' @export
+file_copy_to_dir <- function(path_to_file, dest_dir, timestamp = TRUE){
+  file_name <- path_to_file |> fs::path_file()
+  base_name <- file_name |> fs::path_ext_remove()
+  ext <- file_name |> tools::file_ext()
+  output_path <- if(timestamp){
+    fs::path(dest_dir, glue::glue("{base_name}_{get_timestamp()}.{ext}"))
+    } else{fs::path(dest_dir, file_name)}
+  fs::file_copy(path_to_file, output_path)
+}
