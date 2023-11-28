@@ -20,13 +20,18 @@ make_log_dose <- function(df){
   assertthat::assert_that("dose_nM" %in% colnames(df) |
                             "dose_uM" %in% colnames(df),
                           msg = "Dose column not found in data")
-  # if dose_uM is present, convert uM to nM, then combine with nM
-  if("dose_uM" %in% colnames(df)){
-    df <- df |> dplyr::mutate(dose_nM_from_uM = .data$dose_uM*1e3,
-                              dose_nM = dplyr::coalesce(.data$dose_nM, .data$dose_nM_from_uM))
+  # if both nM and uM are present, convert uM to nM, then combine with nM
+  if("dose_uM" %in% colnames(df) & "dose_nM" %in% colnames(df)){
+    df |> dplyr::mutate(dose_nM_from_uM = .data$dose_uM*1e3,
+                        dose_nM = dplyr::coalesce(.data$dose_nM,
+                                                  .data$dose_nM_from_uM)) |>
+      dplyr::mutate(log_dose = log10(.data$dose_nM/1e9)) |>
+      dplyr::select(-dplyr::any_of("dose_nM_from_uM")) # remove temp column
+  } else{
+    if("dose_uM" %in% colnames(df)){
+      df |> dplyr::mutate(log_dose = log10(.data$dose_uM/1e6))
+    } else df |> dplyr::mutate(log_dose = log10(.data$dose_nM/1e9))
   }
-  df |> dplyr::mutate(log_dose = log10(.data$dose_nM/1e9)) |>
-    dplyr::select(-dplyr::any_of("dose_nM_from_uM"))
 }
 #' Normalize dose-response data to 0-dose conditions
 #'
