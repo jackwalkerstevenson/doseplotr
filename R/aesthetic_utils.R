@@ -73,11 +73,14 @@ minor_breaks <- function(min_val, max_val, log_units = FALSE){
 
 #' Generate minor breaks for an axis in log units
 #'
-#' This function generates logistic minor axis breaks for an axis that uses
+#' This function generates non-logistic minor axis breaks for an axis that uses
 #' log-transformed units, such that the data being plotted is e.g. -3 rather
-#' than 0.001.
-#' @param min_val The minimum value to plot, or log floor of same, in log-transformed units (-8.3 and -8 will both be converted to -8).
-#' @param max_val The maximum value to plot, or log ceiling of same, in log-transformed units (-4.5 and -4 will both be converted to -4).
+#' than 0.001. For instance, the minor breaks between -9 and -8 logM, i.e. 1 nM
+#' and 10 nM, represent 1,2,3... nM rather than -8.9,-8.8,-8.7... logM.
+#' @param min_val The minimum value to plot, or log floor of same, in
+#'   log-transformed units (-8.3 and -8 will both be converted to -8).
+#' @param max_val The maximum value to plot, or log ceiling of same, in
+#'   log-transformed units (-4.5 and -4 will both be converted to -4).
 #' @return A vector of minor axis breaks in log-transformed units.
 #' @export
 #' @examples
