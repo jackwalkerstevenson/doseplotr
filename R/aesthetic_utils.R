@@ -97,9 +97,9 @@ minor_breaks_log <- function(min_val, max_val){
 #' @examples
 #' shape_scale_default()
 shape_scale_default <- function(){
-  c(19, # solid circle
-    17, # solid triangle
-    15, # solid square
+  c(19, # solid circle "circle"
+    17, # solid triangle "triangle"
+    15, # solid square "square"
     18, # solid diamond
     1, # empty circle
     2, # empty triangle

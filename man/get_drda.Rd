@@ -4,7 +4,7 @@
 \alias{get_drda}
 \title{Get a dose-response model from data with flexible bounds on parameters}
 \usage{
-get_drda(data, response_col = "response")
+get_drda(data, response_col = "response", bounded = TRUE)
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for only one treatment
@@ -18,6 +18,8 @@ The dataframe should contain the following columns:
 \item{response_col}{Name of the column containing response values.
 Default is "response". Typical alternatives might include e.g.
 "percent_inhibition", "viability", "growth", "activity".}
+
+\item{bounded}{Whether to set bounds on the parameters of the model}
 }
 \value{
 A dose-response model object of class \code{drda}.
@@ -26,7 +28,8 @@ A dose-response model object of class \code{drda}.
 \code{get_drda()} runs \code{\link[=get_drda_helper]{get_drda_helper()}} to generate a 4-parameter logistic
 dose-response model for the effect of a given treatment on a target. It
 attempts to bound the parameters of the model to avoid physically unrealistic
-fits but allows some variation in 0-dose asymptote value.
+fits but allows some variation in 0-dose asymptote value, unless "bounded" is
+set to FALSE.
 }
 \details{
 If the height of the model is negative (if response decreases at higher

@@ -32,7 +32,8 @@ get_drda_helper <- function(data, response_col="response", ...){
 #' `get_drda()` runs [get_drda_helper()] to generate a 4-parameter logistic
 #' dose-response model for the effect of a given treatment on a target. It
 #' attempts to bound the parameters of the model to avoid physically unrealistic
-#' fits but allows some variation in 0-dose asymptote value.
+#' fits but allows some variation in 0-dose asymptote value, unless "bounded" is
+#' set to FALSE.
 #'
 #' If the height of the model is negative (if response decreases at higher
 #' dose), the zero-dose asymptote is bounded in (80, 120), and the height is
@@ -51,12 +52,15 @@ get_drda_helper <- function(data, response_col="response", ...){
 #' still end up slightly above 100.
 #'
 #' @inherit get_drda_helper params return
+#' @param bounded Whether to set bounds on the parameters of the model
 #' @export
 #'
-get_drda <- function(data, response_col="response"){
+get_drda <- function(data, response_col="response", bounded = TRUE){
   # first get coefficients of a model with no bounds on parameters
   tryCatch({
-    unbounded_coeffs <- stats::coefficients(get_drda_helper(data, response_col))
+    unbounded_model <- get_drda_helper(data, response_col)
+    if(!bounded){return(unbounded_model)}
+    unbounded_coeffs <- stats::coefficients(unbounded_model)
     unbounded_delta <- unbounded_coeffs["delta"] # height of curve
     # bound curve height depending on whether the model increases or decreases
     if(unbounded_delta < 0){

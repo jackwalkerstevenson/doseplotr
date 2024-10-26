@@ -28,6 +28,7 @@ excel_to_csv <- function(excel_path){
 #' @param ext Extension for which to find files, e.g. "xls". Note this is a
 #'   regex, so "xls" will find both .xls and .xlsx files.
 #' @return A vector of file paths with the given extension.
+#' @export
 get_paths_with_ext <- function(dir, ext){
   # find file names in given directory
   c(list.files(dir, pattern = glue::glue("^[[:alnum:]].*{ext}"))) |>

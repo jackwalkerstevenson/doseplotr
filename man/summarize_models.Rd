@@ -4,7 +4,12 @@
 \alias{summarize_models}
 \title{Summarize model parameters for all combinations of treatments and targets}
 \usage{
-summarize_models(data, response_col = "response", rigid = FALSE)
+summarize_models(
+  data,
+  response_col = "response",
+  rigid = FALSE,
+  bounded = TRUE
+)
 }
 \arguments{
 \item{data}{A dataframe containing dose-response data for one or more
@@ -19,8 +24,10 @@ following columns:
 Default is "response". Typical alternatives might include e.g.
 "percent_inhibition", "viability", "growth", "activity".}
 
-\item{rigid}{Whether to set a rigid low-dose asymptode with
+\item{rigid}{Whether to set a rigid low-dose asymptote with
 \code{get_drda_rigid()}}
+
+\item{bounded}{Whether to set bounds on the model asymptotes at all}
 }
 \value{
 A summary dataframe containing one row for each combination of
